@@ -1,3 +1,4 @@
+using TaskList.ConsoleApp.Controllers;
 using TaskList.ConsoleApp.Tests.Functional._Utilities;
 
 namespace TaskList.ConsoleApp.Tests.Functional
@@ -15,14 +16,14 @@ namespace TaskList.ConsoleApp.Tests.Functional
         {
             // Arrange
             _console = new FakeConsole();
-            Program taskList = new(_console);
+            var taskList = new TaskListController(_console);
 
             // Act
             _applicationThread = new Thread(taskList.Run);
             _applicationThread.Start();
 
             // Assert
-            ReadLines(Program.startupText);
+            ReadLines(TaskListController.StartupText);
         }
 
         [TearDown]
