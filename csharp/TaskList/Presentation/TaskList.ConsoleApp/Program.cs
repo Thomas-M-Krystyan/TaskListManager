@@ -34,7 +34,7 @@ namespace TaskList.ConsoleApp
 
                 string command = _console.ReadLine();
 
-                if (command == QUIT)
+                if (command.Equals(QUIT, StringComparison.InvariantCultureIgnoreCase))
                 {
                     break;
                 }
