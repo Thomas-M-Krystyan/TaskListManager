@@ -1,3 +1,5 @@
+using TaskList.ConsoleApp.IO.Interfaces;
+
 namespace TaskList.ConsoleApp.Tests.Functional._Utilities
 {
     internal sealed class FakeConsole : IConsole

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Presentation\TaskList.ConsoleApp\TaskList.ConsoleApp.csproj" />
     <ProjectReference Include="..\..\..\TaskList\TaskList.csproj" />
   </ItemGroup>
 
