@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace TaskList
+﻿namespace TaskList
 {
-	public sealed class TaskList
+    public sealed class TaskList
 	{
 		private const string QUIT = "quit";
 		public static readonly string startupText = "Welcome to TaskList! Type 'help' for available commands.";
@@ -27,20 +23,23 @@ namespace TaskList
 		public void Run()
 		{
 			console.WriteLine(startupText);
-			while (true) {
-				console.Write("> ");
-				var command = console.ReadLine();
-				if (command == QUIT) {
-					break;
+			while (true)
+            {
+                console.Write("> ");
+                string command = console.ReadLine();
+				if (command == QUIT)
+                {
+                    break;
 				}
-				Execute(command);
-			}
-		}
 
-		private void Execute(string commandLine)
+				Execute(command);
+            }
+        }
+
+        private void Execute(string commandLine)
 		{
-			var commandRest = commandLine.Split(" ".ToCharArray(), 2);
-			var command = commandRest[0];
+            string[] commandRest = commandLine.Split(" ".ToCharArray(), 2);
+            string command = commandRest[0];
 			switch (command) {
 			case "show":
 				Show();
@@ -65,30 +64,36 @@ namespace TaskList
 
 		private void Show()
 		{
-			foreach (var project in tasks) {
-				console.WriteLine(project.Key);
-				foreach (var task in project.Value) {
-					console.WriteLine("    [{0}] {1}: {2}", (task.Done ? 'x' : ' '), task.Id, task.Description);
+			foreach (KeyValuePair<string, IList<Task>> project in tasks)
+            {
+                console.WriteLine(project.Key);
+				foreach (Task task in project.Value)
+                {
+                    console.WriteLine("    [{0}] {1}: {2}", task.Done ? 'x' : ' ', task.Id, task.Description);
 				}
+
 				console.WriteLine();
-			}
-		}
+            }
+        }
 
-		private void Add(string commandLine)
+        private void Add(string commandLine)
 		{
-			var subcommandRest = commandLine.Split(" ".ToCharArray(), 2);
-			var subcommand = subcommandRest[0];
-			if (subcommand == "project") {
-				AddProject(subcommandRest[1]);
-			} else if (subcommand == "task") {
-				var projectTask = subcommandRest[1].Split(" ".ToCharArray(), 2);
+            string[] subcommandRest = commandLine.Split(" ".ToCharArray(), 2);
+            string subcommand = subcommandRest[0];
+			if (subcommand == "project")
+            {
+                AddProject(subcommandRest[1]);
+            }
+            else if (subcommand == "task")
+            {
+                string[] projectTask = subcommandRest[1].Split(" ".ToCharArray(), 2);
 				AddTask(projectTask[0], projectTask[1]);
-			}
-		}
+            }
+        }
 
-		private void AddProject(string name)
+        private void AddProject(string name)
 		{
-			tasks[name] = new List<Task>();
+			tasks[name] = [];
 		}
 
 		private void AddTask(string project, string description)
@@ -98,6 +103,7 @@ namespace TaskList
 				Console.WriteLine("Could not find a project with the name \"{0}\".", project);
 				return;
 			}
+
 			projectTasks.Add(new Task { Id = NextId(), Description = description, Done = false });
 		}
 
@@ -114,19 +120,20 @@ namespace TaskList
 		private void SetDone(string idString, bool done)
 		{
 			int id = int.Parse(idString);
-			var identifiedTask = tasks
+            Task? identifiedTask = tasks
 				.Select(project => project.Value.FirstOrDefault(task => task.Id == id))
 				.Where(task => task != null)
 				.FirstOrDefault();
-			if (identifiedTask == null) {
-				console.WriteLine("Could not find a task with an ID of {0}.", id);
+			if (identifiedTask == null)
+            {
+                console.WriteLine("Could not find a task with an ID of {0}.", id);
 				return;
-			}
+            }
 
-			identifiedTask.Done = done;
-		}
+            identifiedTask.Done = done;
+        }
 
-		private void Help()
+        private void Help()
 		{
 			console.WriteLine("Commands:");
 			console.WriteLine("  show");

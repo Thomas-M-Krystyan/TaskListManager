@@ -1,8 +1,6 @@
-using TaskList;
-
 namespace Tasks
 {
-	[TestFixture]
+    [TestFixture]
 	public sealed class ApplicationTest
 	{
 		public const string PROMPT = "> ";
@@ -14,8 +12,8 @@ namespace Tasks
 		public void StartTheApplication()
 		{
 			this.console = new FakeConsole();
-			var taskList = new TaskList.TaskList(console);
-			this.applicationThread = new System.Threading.Thread(() => taskList.Run());
+            TaskList.TaskList taskList = new(console);
+			this.applicationThread = new System.Threading.Thread(taskList.Run);
 			applicationThread.Start();
 			ReadLines(TaskList.TaskList.startupText);
 		}
@@ -89,14 +87,14 @@ namespace Tasks
 
 		private void Read(string expectedOutput)
 		{
-			var length = expectedOutput.Length;
-			var actualOutput = console.RetrieveOutput(expectedOutput.Length);
+            int length = expectedOutput.Length;
+            string actualOutput = console.RetrieveOutput(expectedOutput.Length);
 			Assert.AreEqual(expectedOutput, actualOutput);
 		}
 
 		private void ReadLines(params string[] expectedOutput)
 		{
-			foreach (var line in expectedOutput)
+			foreach (string line in expectedOutput)
 			{
 				Read(line + Environment.NewLine);
 			}

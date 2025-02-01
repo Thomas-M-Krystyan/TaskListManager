@@ -9,7 +9,7 @@ namespace TaskList
         [HttpGet]
         public IEnumerable<string> GetTasks()
         {
-            var tasks = Enumerable.Range(1, 5).Select(index => "task" + index).ToArray();
+            string[] tasks = Enumerable.Range(1, 5).Select(index => "task" + index).ToArray();
             return tasks;
         }
     }

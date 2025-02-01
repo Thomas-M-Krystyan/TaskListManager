@@ -1,8 +1,6 @@
-using System;
-
 namespace TaskList
 {
-	public class RealConsole : IConsole
+    public class RealConsole : IConsole
 	{
 		public string ReadLine()
 		{

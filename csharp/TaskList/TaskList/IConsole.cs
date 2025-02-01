@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace TaskList
+﻿namespace TaskList
 {
-	public interface IConsole
+    public interface IConsole
 	{
 		string ReadLine();
 

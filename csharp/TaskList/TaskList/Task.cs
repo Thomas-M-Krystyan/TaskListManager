@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-
 namespace TaskList
 {
-	public class Task
+    public class Task
 	{
 		public long Id { get; set; }
 
