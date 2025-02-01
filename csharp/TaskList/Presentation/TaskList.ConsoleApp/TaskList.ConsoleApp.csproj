@@ -17,11 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    <ProjectReference Include="..\..\Core\Domain\TaskList.Domain\TaskList.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Domain\TaskList.Domain\TaskList.Domain.csproj" />
+    <InternalsVisibleTo Include="TaskList.ConsoleApp.Tests.Functional" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
 </Project>

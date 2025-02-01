@@ -15,14 +15,14 @@ namespace TaskList.ConsoleApp.Tests.Functional
         {
             // Arrange
             _console = new FakeConsole();
-            TaskList taskList = new(_console);
+            Program taskList = new(_console);
 
             // Act
             _applicationThread = new Thread(taskList.Run);
             _applicationThread.Start();
 
             // Assert
-            ReadLines(TaskList.startupText);
+            ReadLines(Program.startupText);
         }
 
         [TearDown]
