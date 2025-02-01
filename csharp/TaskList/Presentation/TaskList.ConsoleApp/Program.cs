@@ -48,7 +48,7 @@ namespace TaskList.ConsoleApp
             string[] commandRest = commandLine.Split(' ', 2);
             string command = commandRest[0];
 
-            switch (command)
+            switch (command.ToLower())
             {
                 case "show":
                     ShowCommand();
