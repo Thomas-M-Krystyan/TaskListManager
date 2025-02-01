@@ -12,6 +12,7 @@ namespace TaskList.Logic.Managers
     {
         private readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
 
+        /// <inheritdoc cref="ITaskManager.DisplayTaskList()"/>
         public IReadOnlyDictionary<string, ProjectItem> GetTaskList()
         {
             // NOTE: It might look silly, but it's a shorter solution to make a deep-copy of the collection
