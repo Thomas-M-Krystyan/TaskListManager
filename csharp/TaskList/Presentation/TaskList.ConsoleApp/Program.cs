@@ -51,23 +51,23 @@ namespace TaskList.ConsoleApp
             switch (command)
             {
                 case "show":
-                    Show();
+                    ShowCommand();
                     break;
 
                 case "add":
-                    Add(commandRest[1]);
+                    AddCommand(commandRest[1]);
                     break;
 
                 case "check":
-                    Check(commandRest[1]);
+                    CheckCommand(commandRest[1], true);
                     break;
 
                 case "uncheck":
-                    Uncheck(commandRest[1]);
+                    CheckCommand(commandRest[1], false);
                     break;
 
                 case "help":
-                    Help();
+                    HelpCommand();
                     break;
 
                 default:
@@ -76,7 +76,7 @@ namespace TaskList.ConsoleApp
             }
         }
 
-        private void Show()
+        private void ShowCommand()
         {
             foreach (KeyValuePair<string, ProjectItem> project in _tasks)
             {
@@ -91,7 +91,7 @@ namespace TaskList.ConsoleApp
             }
         }
 
-        private void Add(string commandLine)
+        private void AddCommand(string commandLine)
         {
             string[] subcommandRest = commandLine.Split(" ".ToCharArray(), 2);
             string subcommand = subcommandRest[0];
@@ -125,17 +125,7 @@ namespace TaskList.ConsoleApp
             projectTasks.Tasks.Add(new TaskItem { Id = NextId(), Description = description, IsDone = false });
         }
 
-        private void Check(string idString)
-        {
-            SetDone(idString, true);
-        }
-
-        private void Uncheck(string idString)
-        {
-            SetDone(idString, false);
-        }
-
-        private void SetDone(string idString, bool isDone)
+        private void CheckCommand(string idString, bool isDone)
         {
             if (long.TryParse(idString, out long taskId))
             {
@@ -155,7 +145,7 @@ namespace TaskList.ConsoleApp
             }
         }
 
-        private void Help()
+        private void HelpCommand()
         {
             _console.WriteLine("Commands:");
             _console.WriteLine("  show");
