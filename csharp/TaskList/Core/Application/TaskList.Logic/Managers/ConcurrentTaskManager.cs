@@ -10,7 +10,7 @@ namespace TaskList.Logic.Managers
     /// <remarks>The application generic implementation.</remarks>
     public abstract class ConcurrentTaskManager : ITaskManager
     {
-        internal readonly ConcurrentDictionary<string, ProjectItem> TaskList = [];
+        private readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
 
         public IReadOnlyDictionary<string, ProjectItem> GetTaskList()
         {
@@ -18,7 +18,7 @@ namespace TaskList.Logic.Managers
             //       which results in a thread-safe and "truly" immutable (the collection itself and it's
             //       elements) snapshot of the actual task list. This approach would protect the internal
             //       data source from direct manipulations from outside and ensure the data consistency
-            string serializedTaskList = JsonSerializer.Serialize(TaskList);
+            string serializedTaskList = JsonSerializer.Serialize(_taskList);
 
             return JsonSerializer.Deserialize<Dictionary<string, ProjectItem>>(serializedTaskList)
                 ?? [];
@@ -29,7 +29,7 @@ namespace TaskList.Logic.Managers
         {
             try
             {
-                bool isSuccess = TaskList.TryAdd(projectName, new ProjectItem
+                bool isSuccess = _taskList.TryAdd(projectName, new ProjectItem
                 {
                     Name = projectName,
                     Tasks = []
