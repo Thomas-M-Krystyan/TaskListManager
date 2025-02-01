@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start Console" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="TaskList" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.ortecfinance.tasklist.TaskListApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

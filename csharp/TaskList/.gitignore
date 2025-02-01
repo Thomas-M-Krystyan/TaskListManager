@@ -1,0 +1,12 @@
+**/obj/**
+**/bin/**
+.vs/**
+*.csproj.user
+*.sln.DotSettings.user
+*.csproj.DotSettings.user
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
