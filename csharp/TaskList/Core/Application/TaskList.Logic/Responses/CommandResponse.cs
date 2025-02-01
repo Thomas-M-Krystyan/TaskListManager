@@ -1,4 +1,6 @@
-﻿namespace TaskList.Logic.Responses
+﻿using TaskList.Logic.Extensions;
+
+namespace TaskList.Logic.Responses
 {
     /// <summary>
     /// The standardized, general-purpose application response to business operations.
@@ -53,6 +55,6 @@
         /// The unsuccessful result of the operation.
         /// </summary>
         public static CommandResponse Failure(Exception exception)
-            => new(false, string.Format("Operation failed: {0}.", exception.Message));
+            => new(false, string.Format("Operation failed: {0}.", exception.GetMessage()));
     }
 }
