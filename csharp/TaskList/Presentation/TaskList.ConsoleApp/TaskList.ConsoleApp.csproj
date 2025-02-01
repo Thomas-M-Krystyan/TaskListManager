@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="TaskList.ConsoleApp.Tests.Functional" />
+    <InternalsVisibleTo Include="TaskList.ConsoleApp.Tests.Unit" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 

@@ -34,8 +34,10 @@ namespace TaskList.ConsoleApp
             services.TryAddSingleton<ICounterRegister, CounterRegister>();
             services.TryAddSingleton<IConsoleTaskManager, ConsoleTaskManager>();
 
-            // Scoped
             return services
+                // Transient
+                .AddTransient<IStringBuilder, StringBuilderProxy>()
+                // Scoped
                 .AddScoped<IConsole, RealConsole>()
                 .AddScoped<IWorkflowController, TaskListController>();
         }

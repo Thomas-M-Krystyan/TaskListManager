@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.Logic.Tests.Unit", "Tests\Core\Application\TaskList.Logic.Tests.Unit\TaskList.Logic.Tests.Unit.csproj", "{DBF2565E-31FD-4058-AF9B-4969788A3A70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.ConsoleApp.Tests.Unit", "C:\Users\neoda\Downloads\chapter-hiring-assessment-backend-main\csharp\TaskList\Tests\Presentation\TaskList.ConsoleApp.Tests.Unit\TaskList.ConsoleApp.Tests.Unit.csproj", "{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{DBF2565E-31FD-4058-AF9B-4969788A3A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBF2565E-31FD-4058-AF9B-4969788A3A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBF2565E-31FD-4058-AF9B-4969788A3A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,5 +93,6 @@ Global
 		{CDC50078-923C-49CC-8600-C3FA9D343510} = {3B770CD3-C0FE-4CF1-95B2-88F088276BEE}
 		{60B7B1DC-177D-49BF-A4AC-1DBC9C8E15DA} = {CDC50078-923C-49CC-8600-C3FA9D343510}
 		{DBF2565E-31FD-4058-AF9B-4969788A3A70} = {60B7B1DC-177D-49BF-A4AC-1DBC9C8E15DA}
+		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8} = {D2D0448A-F602-4BCA-8DE3-B34A0C575403}
 	EndGlobalSection
 EndGlobal

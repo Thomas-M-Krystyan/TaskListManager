@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using TaskList.ConsoleApp.IO.Interfaces;
 using TaskList.ConsoleApp.Managers.Interfaces;
 using TaskList.Domain.Models;
 using TaskList.Logic.Helpers.Interfaces;
@@ -12,13 +13,14 @@ namespace TaskList.ConsoleApp.Managers
     /// <seealso cref="ITaskManager"/>
     internal sealed class ConsoleTaskManager : ConcurrentTaskManager, IConsoleTaskManager
     {
-        private readonly StringBuilder _stringBuilder = new();
+        private readonly IStringBuilder _stringBuilder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleTaskManager"/> class.
         /// </summary>
-        public ConsoleTaskManager(ICounterRegister counter) : base(counter)
+        public ConsoleTaskManager(IStringBuilder stringBuilder, ICounterRegister counter) : base(counter)
         {
+            _stringBuilder = stringBuilder;
         }
 
         /// <inheritdoc cref="ITaskManager.DisplayTaskList()"/>

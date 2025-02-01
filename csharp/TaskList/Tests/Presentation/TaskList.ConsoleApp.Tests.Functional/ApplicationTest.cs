@@ -1,4 +1,5 @@
 using TaskList.ConsoleApp.Controllers;
+using TaskList.ConsoleApp.IO;
 using TaskList.ConsoleApp.Managers;
 using TaskList.ConsoleApp.Tests.Functional._Utilities;
 using TaskList.Logic.Helpers;
@@ -18,8 +19,9 @@ namespace TaskList.ConsoleApp.Tests.Functional
         {
             // Arrange
             _console = new FakeConsole();
+            StringBuilderProxy realStringBuilder = new();
             CounterRegister realCounterRegister = new();
-            ConsoleTaskManager realTaskManager = new(realCounterRegister);
+            ConsoleTaskManager realTaskManager = new(realStringBuilder, realCounterRegister);
             TaskListController taskList = new(_console, realTaskManager);
 
             // Act
