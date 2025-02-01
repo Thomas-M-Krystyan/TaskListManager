@@ -45,7 +45,7 @@ namespace TaskList.ConsoleApp
 
         private void Execute(string commandLine)
         {
-            string[] commandRest = commandLine.Split(" ".ToCharArray(), 2);
+            string[] commandRest = commandLine.Split(' ', 2);
             string command = commandRest[0];
 
             switch (command)
@@ -93,7 +93,7 @@ namespace TaskList.ConsoleApp
 
         private void AddCommand(string commandLine)
         {
-            string[] subcommandRest = commandLine.Split(" ".ToCharArray(), 2);
+            string[] subcommandRest = commandLine.Split(' ', 2);
             string subcommand = subcommandRest[0];
 
             if (subcommand == "project")
@@ -102,7 +102,7 @@ namespace TaskList.ConsoleApp
             }
             else if (subcommand == "task")
             {
-                string[] projectTask = subcommandRest[1].Split(" ".ToCharArray(), 2);
+                string[] projectTask = subcommandRest[1].Split(' ', 2);
 
                 AddTask(projectTask[0], projectTask[1]);
             }
