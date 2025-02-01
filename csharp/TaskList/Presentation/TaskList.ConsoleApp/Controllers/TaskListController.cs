@@ -27,7 +27,6 @@ namespace TaskList.ConsoleApp.Controllers
         public void Run()
         {
             _console.WriteLine(StartupText);
-            string command = string.Empty;
 
             while (true)
             {
@@ -35,7 +34,7 @@ namespace TaskList.ConsoleApp.Controllers
                 {
                     _console.Write("> ");
 
-                    command = _console.ReadLine();
+                    string command = _console.ReadLine();
 
                     if (command.Equals(QUIT, StringComparison.InvariantCultureIgnoreCase))
                     {

@@ -23,13 +23,12 @@ namespace TaskList.ConsoleApp
         }
 
         #region Dependency Injection
-        private static ServiceCollection RegisterConsoleServices(this ServiceCollection services)
+        private static IServiceCollection RegisterConsoleServices(this ServiceCollection services)
         {
             // Scoped
-            services.AddScoped<IConsole, RealConsole>();
-            services.AddScoped<IWorkflowController, TaskListController>();
-
-            return services;
+            return services
+                .AddScoped<IConsole, RealConsole>()
+                .AddScoped<IWorkflowController, TaskListController>();
         }
         #endregion
     }

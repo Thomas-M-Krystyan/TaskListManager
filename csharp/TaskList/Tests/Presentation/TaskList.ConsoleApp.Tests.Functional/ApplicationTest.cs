@@ -16,7 +16,7 @@ namespace TaskList.ConsoleApp.Tests.Functional
         {
             // Arrange
             _console = new FakeConsole();
-            var taskList = new TaskListController(_console);
+            TaskListController taskList = new(_console);
 
             // Act
             _applicationThread = new Thread(taskList.Run);
@@ -34,9 +34,9 @@ namespace TaskList.ConsoleApp.Tests.Functional
                 return;
             }
 
-            #pragma warning disable SYSLIB0006  // Type or member is obsolete
+#pragma warning disable SYSLIB0006  // Type or member is obsolete
             _applicationThread.Abort();
-            #pragma warning restore SYSLIB0006
+#pragma warning restore SYSLIB0006
 
             throw new Exception("The application is still running.");
         }
