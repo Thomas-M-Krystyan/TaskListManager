@@ -137,21 +137,22 @@ namespace TaskList.ConsoleApp
 
         private void SetDone(string idString, bool isDone)
         {
-            int id = int.Parse(idString);
-
-            TaskItem? identifiedTask = _tasks
-                .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == id))
-                .Where(task => task != null)
-                .FirstOrDefault();
-
-            if (identifiedTask == null)
+            if (long.TryParse(idString, out long taskId))
             {
-                _console.WriteLine("Could not find a task with an ID of {0}.", id);
+                TaskItem? identifiedTask = _tasks
+                    .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == taskId))
+                    .Where(task => task != null)
+                    .FirstOrDefault();
 
-                return;
+                if (identifiedTask == null)
+                {
+                    _console.WriteLine("Could not find a task with an ID of {0}.", taskId);
+
+                    return;
+                }
+
+                identifiedTask.IsDone = isDone;
             }
-
-            identifiedTask.IsDone = isDone;
         }
 
         private void Help()
