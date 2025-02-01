@@ -9,7 +9,7 @@ namespace TaskList.ConsoleApp
         private const string QUIT = "quit";
         public static readonly string startupText = "Welcome to TaskList! Type 'help' for available commands.";
 
-        private readonly Dictionary<string, ProjectItem> _tasks = new Dictionary<string, ProjectItem>();
+        private readonly Dictionary<string, ProjectItem> _tasks = [];
         private readonly IConsole _console;
 
         private long _lastId = 0;
