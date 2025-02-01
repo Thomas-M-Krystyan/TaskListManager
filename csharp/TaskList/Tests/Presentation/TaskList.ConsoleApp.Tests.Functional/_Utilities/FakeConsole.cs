@@ -1,6 +1,7 @@
 using TaskList;
+using Tasks;
 
-namespace Tasks
+namespace TaskList.ConsoleApp.Tests.Functional._Utilities
 {
     public class FakeConsole : IConsole
     {

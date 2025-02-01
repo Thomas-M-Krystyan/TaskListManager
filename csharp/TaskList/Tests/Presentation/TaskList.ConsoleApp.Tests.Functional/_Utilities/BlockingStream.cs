@@ -1,4 +1,4 @@
-﻿namespace Tasks
+﻿namespace TaskList.ConsoleApp.Tests.Functional._Utilities
 {
     public class BlockingStream : Stream
     {
