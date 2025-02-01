@@ -31,7 +31,8 @@ namespace TaskList.Logic.Tests.Unit.Managers
             Assert.Multiple(() =>
             {
                 Assert.That(taskListCountBefore, Is.Zero);
-                Assert.That(response, Is.True);
+                Assert.That(response.IsSuccess, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The project with name \"{ProjectName}\" was created."));
                 Assert.That(taskListCountAfter, Is.EqualTo(1));
             });
         }

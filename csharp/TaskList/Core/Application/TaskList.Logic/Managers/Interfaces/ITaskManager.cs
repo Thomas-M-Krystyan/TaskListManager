@@ -1,4 +1,6 @@
-﻿namespace TaskList.Logic.Managers.Interfaces
+﻿using TaskList.Logic.Responses;
+
+namespace TaskList.Logic.Managers.Interfaces
 {
     /// <summary>
     /// The task manager allowing different operations on task list.
@@ -12,6 +14,6 @@
         /// <returns>
         ///   The result of the operation.
         /// </returns>
-        public bool AddProject(string projectName);
+        public CommandResponse AddProject(string projectName);
     }
 }

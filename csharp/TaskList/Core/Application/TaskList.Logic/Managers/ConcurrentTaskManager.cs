@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using TaskList.Domain.Models;
 using TaskList.Logic.Managers.Interfaces;
+using TaskList.Logic.Responses;
 
 namespace TaskList.Logic.Managers
 {
@@ -11,7 +12,7 @@ namespace TaskList.Logic.Managers
         internal readonly ConcurrentDictionary<string, ProjectItem> TaskList = [];
 
         /// <inheritdoc cref="ITaskManager.AddProject(string)"/>
-        public bool AddProject(string projectName)
+        public CommandResponse AddProject(string projectName)
         {
             try
             {
@@ -21,11 +22,13 @@ namespace TaskList.Logic.Managers
                     Tasks = []
                 });
 
-                return true;
+                return isSuccess
+                    ? CommandResponse.Success(content: string.Format("The project with name \"{0}\" was created", projectName))
+                    : CommandResponse.Failure("Project with the same name already exists");
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return false;
+                return CommandResponse.Failure(exception);
             }
         }
     }
