@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TaskList.ConsoleApp": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
