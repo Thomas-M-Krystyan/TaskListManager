@@ -6,6 +6,11 @@
         "Path": "Presentation\\TaskList.WebApi\\TaskList.WebApi.csproj",
         "Action": "Start",
         "DebugTarget": "IIS Express"
+      },
+      {
+        "Path": "Presentation\\TaskList.ConsoleApp\\TaskList.ConsoleApp.csproj",
+        "Action": "Start",
+        "DebugTarget": "TaskList.ConsoleApp"
       }
     ]
   }
