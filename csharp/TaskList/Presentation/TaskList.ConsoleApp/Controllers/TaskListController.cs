@@ -1,5 +1,6 @@
 ﻿using TaskList.ConsoleApp.Controllers.Interfaces;
 using TaskList.ConsoleApp.IO.Interfaces;
+using TaskList.ConsoleApp.Managers.Interfaces;
 using TaskList.Domain.Models;
 
 namespace TaskList.ConsoleApp.Controllers
@@ -11,6 +12,8 @@ namespace TaskList.ConsoleApp.Controllers
         public const string StartupText = "Welcome to TaskList! Type 'help' for available commands.";
 
         private readonly IConsole _console;
+        private readonly IConsoleTaskManager _taskManager;
+
         private readonly Dictionary<string, ProjectItem> _tasks = [];
 
         private long _lastId = 0;
@@ -18,9 +21,10 @@ namespace TaskList.ConsoleApp.Controllers
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskListController"/> class.
         /// </summary>
-        public TaskListController(IConsole console)
+        public TaskListController(IConsole console, IConsoleTaskManager taskManager)
         {
             _console = console;
+            _taskManager = taskManager;
         }
 
         /// <inheritdoc cref="IWorkflowController.Run()"/>
