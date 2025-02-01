@@ -33,5 +33,15 @@ namespace TaskList.Logic.Managers.Interfaces
         ///   The result of the operation.
         /// </returns>
         public CommandResponse AddProject(string projectName);
+
+        /// <summary>
+        /// Adds the <see cref="TaskItem"/> to the specific <see cref="ProjectItem"/> from the internal task list.
+        /// </summary>
+        /// <param name="projectName">The name of the project to add the task to.</param>
+        /// <param name="taskName">The name of the task to add.</param>
+        /// <returns>
+        ///   The result of the operation.
+        /// </returns>
+        public CommandResponse AddTask(string projectName, string taskName);
     }
 }
