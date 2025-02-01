@@ -56,11 +56,11 @@ namespace TaskList.Logic.Tests.Unit.Managers
             TestTaskManager taskManager = new();
 
             // Act
-            int taskListCountBefore = taskManager.TaskList.Count;
+            int taskListCountBefore = taskManager.GetTaskList().Count;
 
             CommandResponse response = taskManager.AddProject(ProjectName);
 
-            int taskListCountAfter = taskManager.TaskList.Count;
+            int taskListCountAfter = taskManager.GetTaskList().Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -79,12 +79,12 @@ namespace TaskList.Logic.Tests.Unit.Managers
             TestTaskManager taskManager = new();
 
             // Act
-            int taskListCountBefore = taskManager.TaskList.Count;
+            int taskListCountBefore = taskManager.GetTaskList().Count;
 
             CommandResponse response = taskManager.AddProject(ProjectName);
             response = taskManager.AddProject(ProjectName);
 
-            int taskListCountAfter = taskManager.TaskList.Count;
+            int taskListCountAfter = taskManager.GetTaskList().Count;
 
             // Assert
             Assert.Multiple(() =>
