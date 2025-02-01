@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.Metrics;
 using System.Text.Json;
 using TaskList.Domain.Models;
 using TaskList.Logic.Managers.Interfaces;
@@ -42,6 +43,28 @@ namespace TaskList.Logic.Managers
                 return isSuccess
                     ? CommandResponse.Success(content: string.Format("The project with name \"{0}\" was created", projectName))
                     : CommandResponse.Failure("Project with the same name already exists");
+            }
+            catch (Exception exception)
+            {
+                return CommandResponse.Failure(exception);
+            }
+        }
+
+        /// <inheritdoc cref="ITaskManager.AddTask(string, string)"/>
+        public CommandResponse AddTask(string projectName, string taskName)
+        {
+            try
+            {
+                if (_taskList.TryGetValue(projectName, out ProjectItem project))
+                {
+                    project.Tasks.Add(new TaskItem { Id = 1, Description = taskName, IsDone = false });
+
+                    return CommandResponse.Success(content: string.Format("The task with name \"{0}\" was added to the project \"{1}\"", taskName, projectName));
+                }
+                else
+                {
+                    return CommandResponse.Failure(string.Format("Could not find a project with the name \"{0}\"", projectName));
+                }
             }
             catch (Exception exception)
             {
