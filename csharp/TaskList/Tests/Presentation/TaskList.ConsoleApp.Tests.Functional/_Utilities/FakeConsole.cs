@@ -1,9 +1,6 @@
-using TaskList;
-using Tasks;
-
 namespace TaskList.ConsoleApp.Tests.Functional._Utilities
 {
-    public class FakeConsole : IConsole
+    internal sealed class FakeConsole : IConsole
     {
         private readonly TextReader inputReader;
         private readonly TextWriter inputWriter;
@@ -11,7 +8,7 @@ namespace TaskList.ConsoleApp.Tests.Functional._Utilities
         private readonly TextReader outputReader;
         private readonly TextWriter outputWriter;
 
-        public FakeConsole()
+        internal FakeConsole()
         {
             Stream inputStream = new BlockingStream(new ProducerConsumerStream());
             this.inputReader = new StreamReader(inputStream);
@@ -24,7 +21,7 @@ namespace TaskList.ConsoleApp.Tests.Functional._Utilities
 
         public string ReadLine()
         {
-            return inputReader.ReadLine();
+            return inputReader.ReadLine() ?? string.Empty;
         }
 
         public void Write(string format, params object[] args)
@@ -50,7 +47,8 @@ namespace TaskList.ConsoleApp.Tests.Functional._Utilities
         public string RetrieveOutput(int length)
         {
             char[] buffer = new char[length];
-            outputReader.ReadBlock(buffer, 0, length);
+            _ = outputReader.ReadBlock(buffer, 0, length);
+
             return new string(buffer);
         }
     }
