@@ -7,28 +7,36 @@ namespace TaskList.ConsoleApp.Tests.Functional
     {
         public const string PROMPT = "> ";
 
-        private FakeConsole console;
-        private Thread applicationThread;
+        private FakeConsole _console;
+        private Thread _applicationThread;
 
         [SetUp]
         public void StartTheApplication()
         {
-            this.console = new FakeConsole();
-            TaskList.TaskList taskList = new(console);
-            this.applicationThread = new Thread(taskList.Run);
-            applicationThread.Start();
-            ReadLines(TaskList.TaskList.startupText);
+            // Arrange
+            _console = new FakeConsole();
+            TaskList taskList = new(_console);
+
+            // Act
+            _applicationThread = new Thread(taskList.Run);
+            _applicationThread.Start();
+
+            // Assert
+            ReadLines(TaskList.startupText);
         }
 
         [TearDown]
         public void KillTheApplication()
         {
-            if (applicationThread == null || !applicationThread.IsAlive)
+            if (_applicationThread == null || !_applicationThread.IsAlive)
             {
                 return;
             }
 
-            applicationThread.Abort();
+            #pragma warning disable SYSLIB0006  // Type or member is obsolete
+            _applicationThread.Abort();
+            #pragma warning restore SYSLIB0006
+
             throw new Exception("The application is still running.");
         }
 
@@ -89,9 +97,9 @@ namespace TaskList.ConsoleApp.Tests.Functional
 
         private void Read(string expectedOutput)
         {
-            int length = expectedOutput.Length;
-            string actualOutput = console.RetrieveOutput(expectedOutput.Length);
-            Assert.AreEqual(expectedOutput, actualOutput);
+            string actualOutput = _console.RetrieveOutput(expectedOutput.Length);
+
+            Assert.That(actualOutput, Is.EqualTo(expectedOutput));
         }
 
         private void ReadLines(params string[] expectedOutput)
@@ -104,7 +112,7 @@ namespace TaskList.ConsoleApp.Tests.Functional
 
         private void Write(string input)
         {
-            console.SendInput(input + Environment.NewLine);
+            _console.SendInput(input + Environment.NewLine);
         }
     }
 }
