@@ -24,6 +24,9 @@ namespace TaskList.Logic.Managers
                 ?? [];
         }
 
+        /// <inheritdoc cref="ITaskManager.DisplayTaskList()"/>
+        public abstract CommandResponse DisplayTaskList();
+
         /// <inheritdoc cref="ITaskManager.AddProject(string)"/>
         public CommandResponse AddProject(string projectName)
         {

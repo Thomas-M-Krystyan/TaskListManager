@@ -18,6 +18,14 @@ namespace TaskList.Logic.Managers.Interfaces
         public IReadOnlyDictionary<string, ProjectItem> GetTaskList();
 
         /// <summary>
+        /// Displays all currently stored <see cref="ProjectItem"/>s and <see cref="TaskItem"/>s.
+        /// </summary>
+        /// <returns>
+        ///   A string representation of internal task list.
+        /// </returns>
+        public CommandResponse DisplayTaskList();
+
+        /// <summary>
         /// Adds <see cref="ProjectItem"/> to the internal task list.
         /// </summary>
         /// <param name="projectName">The name of the project to add.</param>
