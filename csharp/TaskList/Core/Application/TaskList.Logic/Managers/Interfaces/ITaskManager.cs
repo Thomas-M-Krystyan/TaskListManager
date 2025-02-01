@@ -43,5 +43,15 @@ namespace TaskList.Logic.Managers.Interfaces
         ///   The result of the operation.
         /// </returns>
         public CommandResponse AddTask(string projectName, string taskName);
+
+        /// <summary>
+        /// Marks the specific <see cref="TaskItem"/> as finished.
+        /// </summary>
+        /// <param name="taskId">The ID of the task.</param>
+        /// <param name="isDone">Indicates whether the task is finished.</param>
+        /// <returns>
+        ///   The result of the operation.
+        /// </returns>
+        public CommandResponse CheckTask(long taskId, bool isDone);
     }
 }

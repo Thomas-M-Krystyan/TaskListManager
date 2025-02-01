@@ -81,5 +81,28 @@ namespace TaskList.Logic.Managers
                 return CommandResponse.Failure(exception);
             }
         }
+
+        /// <inheritdoc cref="ITaskManager.CheckTask(long, bool)"/>
+        public CommandResponse CheckTask(long taskId, bool isDone)
+        {
+            try
+            {
+                var existing = _taskList
+                        .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == taskId))
+                        .Where(task => task != null)
+                        .FirstOrDefault();
+
+                if (existing == null)
+                {
+                    return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
+                }
+
+                return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
+            }
+            catch (Exception exception)
+            {
+                return CommandResponse.Failure(exception);
+            }
+        }
     }
 }
