@@ -13,7 +13,7 @@ namespace TaskList.ConsoleApp
         /// </summary>
         public static void Main(string[] args)
         {
-            IServiceProvider serviceProvider = new ServiceCollection()
+            ServiceProvider serviceProvider = new ServiceCollection()
                 // Dependency Injection
                 .RegisterConsoleServices()
                 .BuildServiceProvider();
@@ -23,7 +23,7 @@ namespace TaskList.ConsoleApp
         }
 
         #region Dependency Injection
-        private static IServiceCollection RegisterConsoleServices(this ServiceCollection services)
+        private static ServiceCollection RegisterConsoleServices(this ServiceCollection services)
         {
             // Scoped
             services.AddScoped<IConsole, RealConsole>();
