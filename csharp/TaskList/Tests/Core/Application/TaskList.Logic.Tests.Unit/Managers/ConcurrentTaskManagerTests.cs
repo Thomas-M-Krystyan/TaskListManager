@@ -1,4 +1,5 @@
-﻿using TaskList.Logic.Managers;
+﻿using TaskList.Domain.Models;
+using TaskList.Logic.Managers;
 using TaskList.Logic.Responses;
 
 namespace TaskList.Logic.Tests.Unit.Managers
@@ -11,6 +12,39 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
         private sealed class TestTaskManager() : ConcurrentTaskManager()
         {
+        }
+        #endregion
+
+        #region GetTaskList()
+        [Test]
+        public void GetTaskList_WithoutTasks_ReturnsEmptyList()
+        {
+            // Arrange
+            TestTaskManager taskManager = new();
+
+            // Act
+            IReadOnlyDictionary<string, ProjectItem> actualTaskList = taskManager.GetTaskList();
+
+            // Assert
+            Assert.That(actualTaskList, Is.Empty);
+        }
+
+        [Test]
+        public void GetTaskList_WithTasks_ReturnsFilledList()
+        {
+            // Arrange
+            TestTaskManager taskManager = new();
+
+            taskManager.AddProject(ProjectName);
+
+            // Act
+            IReadOnlyDictionary<string, ProjectItem> actualTaskList = taskManager.GetTaskList();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualTaskList, Has.Count.EqualTo(1));
+            });
         }
         #endregion
 
