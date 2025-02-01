@@ -1,4 +1,5 @@
 ﻿using TaskList.Logic.Managers;
+using TaskList.Logic.Responses;
 
 namespace TaskList.Logic.Tests.Unit.Managers
 {
@@ -18,14 +19,14 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void AddProject_Project_UniqueName_ReturnsSuccess()
         {
             // Arrange
-            var taskManager = new TestTaskManager();
+            TestTaskManager taskManager = new();
 
             // Act
-            var taskListCountBefore = taskManager.TaskList.Count;
+            int taskListCountBefore = taskManager.TaskList.Count;
 
-            var response = taskManager.AddProject(ProjectName);
+            CommandResponse response = taskManager.AddProject(ProjectName);
 
-            var taskListCountAfter = taskManager.TaskList.Count;
+            int taskListCountAfter = taskManager.TaskList.Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -41,15 +42,15 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void AddProject_Project_DuplicatedName_ReturnsFailure()
         {
             // Arrange
-            var taskManager = new TestTaskManager();
+            TestTaskManager taskManager = new();
 
             // Act
-            var taskListCountBefore = taskManager.TaskList.Count;
+            int taskListCountBefore = taskManager.TaskList.Count;
 
-            var response = taskManager.AddProject(ProjectName);
+            CommandResponse response = taskManager.AddProject(ProjectName);
             response = taskManager.AddProject(ProjectName);
 
-            var taskListCountAfter = taskManager.TaskList.Count;
+            int taskListCountAfter = taskManager.TaskList.Count;
 
             // Assert
             Assert.Multiple(() =>
