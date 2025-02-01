@@ -163,6 +163,7 @@ namespace TaskList.ConsoleApp
             _console.WriteLine("  add task <project name> <task description>");
             _console.WriteLine("  check <task ID>");
             _console.WriteLine("  uncheck <task ID>");
+            _console.WriteLine("  quit");
             _console.WriteLine();
         }
 
