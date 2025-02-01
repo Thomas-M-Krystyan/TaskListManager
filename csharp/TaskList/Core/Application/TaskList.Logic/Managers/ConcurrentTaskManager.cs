@@ -8,14 +8,14 @@ namespace TaskList.Logic.Managers
     /// <remarks>The application generic implementation.</remarks>
     public abstract class ConcurrentTaskManager : ITaskManager
     {
-        private static readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
+        internal readonly ConcurrentDictionary<string, ProjectItem> TaskList = [];
 
         /// <inheritdoc cref="ITaskManager.AddProject(string)"/>
         public bool AddProject(string projectName)
         {
             try
             {
-                bool isSuccess = _taskList.TryAdd(projectName, new ProjectItem
+                bool isSuccess = TaskList.TryAdd(projectName, new ProjectItem
                 {
                     Name = projectName,
                     Tasks = []
