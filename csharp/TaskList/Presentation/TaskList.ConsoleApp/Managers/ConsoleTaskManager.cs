@@ -53,5 +53,26 @@ namespace TaskList.ConsoleApp.Managers
                 return CommandResponse.Failure(exception);
             }
         }
+
+        /// <inheritdoc cref="IConsoleTaskManager.Help()"/>
+        public string Help()
+        {
+            const string helpMessage =
+                $"Commands:\r\n" +
+                "  show\r\n" +
+                "  add project <project name>\r\n" +
+                "  add task <project name> <task description>\r\n" +
+                "  check <task ID>\r\n" +
+                "  uncheck <task ID>\r\n" +
+                "  quit\r\n";
+
+            return helpMessage;
+        }
+
+        /// <inheritdoc cref="IConsoleTaskManager.Error(string)"/>
+        public string Error(string command)
+        {
+            return string.Format("I don't know what the command \"{0}\" is.", command);
+        }
     }
 }
