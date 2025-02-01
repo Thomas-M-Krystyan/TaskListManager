@@ -26,6 +26,13 @@ namespace TaskList.Logic.Tests.Unit.Managers
         }
         #endregion
 
+        [SetUp]
+        public void SetUp()
+        {
+            _counterMock.Reset();
+            ConcurrentTaskManager.Reset();
+        }
+
         #region GetTaskList()
         [Test]
         public void GetTaskList_WithoutTasks_ReturnsEmptyList()
@@ -187,6 +194,83 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
                 Assert.That(response.IsFailure, Is.True);
                 Assert.That(response.Content, Does.StartWith($"Operation failed: {exceptionMessage}"));
+            });
+        }
+        #endregion
+
+        #region CheckTask()
+        [Test]
+        public void CheckTask_MarkAsDone_TaskList_Empty_ReturnsFailure()
+        {
+            // Arrange
+            const long taskId = 1;
+
+            var taskManager = new TestTaskManager(_counterMock.Object);
+
+            // Act
+            var response = taskManager.CheckTask(taskId, true);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.IsFailure, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation failed: Could not find a task with an ID of {taskId}."));
+            });
+        }
+
+        [Test]
+        public void CheckTask_MarkAsDone_Task_Unfinished_ReturnsSuccess()
+        {
+            // Arrange
+            _counterMock
+                .Setup(counter => counter.GetNextTaskId())
+                .Returns(default(long));
+
+            var taskManager = new TestTaskManager(_counterMock.Object);
+
+            taskManager.AddProject(ProjectName);
+            taskManager.AddTask(ProjectName, TaskName);
+
+            var taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Id;
+
+            // Act
+            var response = taskManager.CheckTask(taskId, true);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.IsSuccess, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The task with ID {taskId} was marked as finished."));
+                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().IsDone, Is.True);
+            });
+        }
+
+        [Test]
+        public void CheckTask_MarkAsUndone_Task_Finished_ReturnsSuccess()
+        {
+            // Arrange
+            _counterMock
+                .Setup(counter => counter.GetNextTaskId())
+                .Returns(default(long));
+
+            var taskManager = new TestTaskManager(_counterMock.Object);
+
+            taskManager.AddProject(ProjectName);
+            taskManager.AddTask(ProjectName, TaskName);
+
+            var taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Id;
+
+            taskManager.CheckTask(taskId, true);
+
+            // Act
+            var response = taskManager.CheckTask(taskId, false);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.IsSuccess, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The task with ID {taskId} was marked as unfinished."));
+                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().IsDone, Is.False);
             });
         }
         #endregion

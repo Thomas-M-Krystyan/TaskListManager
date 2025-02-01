@@ -11,7 +11,7 @@ namespace TaskList.Logic.Managers
     /// <remarks>The application generic implementation.</remarks>
     public abstract class ConcurrentTaskManager : ITaskManager
     {
-        private readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
+        private static readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
 
         private readonly ICounterRegister _counter;
 
@@ -103,6 +103,14 @@ namespace TaskList.Logic.Managers
             {
                 return CommandResponse.Failure(exception);
             }
+        }
+
+        /// <summary>
+        /// Clears the internal list of tasks.
+        /// </summary>
+        internal static void Reset()
+        {
+            _taskList.Clear();
         }
     }
 }
