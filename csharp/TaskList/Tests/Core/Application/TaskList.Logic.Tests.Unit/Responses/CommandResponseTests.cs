@@ -17,7 +17,7 @@ namespace TaskList.Logic.Tests.Unit.Responses
         public void Success_Content_ReturnsExpectedResult(string content, string expectedMessage)
         {
             // Act
-            var response = CommandResponse.Success(content);
+            CommandResponse response = CommandResponse.Success(content);
 
             // Assert
             Assert.Multiple(() =>
@@ -32,7 +32,7 @@ namespace TaskList.Logic.Tests.Unit.Responses
         public void Success_Message_ReturnsExpectedResult()
         {
             // Act
-            var response = CommandResponse.Success(content: TestMessage);
+            CommandResponse response = CommandResponse.Success(content: TestMessage);
 
             // Assert
             Assert.Multiple(() =>
@@ -49,7 +49,7 @@ namespace TaskList.Logic.Tests.Unit.Responses
         public void Failure_String_ReturnsExpectedResult()
         {
             // Act
-            var response = CommandResponse.Failure(TestMessage);
+            CommandResponse response = CommandResponse.Failure(TestMessage);
 
             // Assert
             Assert.Multiple(() =>
@@ -64,10 +64,10 @@ namespace TaskList.Logic.Tests.Unit.Responses
         public void Failure_Exception_ReturnsExpectedResult()
         {
             // Arrange
-            var exception = new Exception(TestMessage);
+            Exception exception = new(TestMessage);
 
             // Act
-            var response = CommandResponse.Failure(exception);
+            CommandResponse response = CommandResponse.Failure(exception);
 
             // Assert
             Assert.Multiple(() =>
