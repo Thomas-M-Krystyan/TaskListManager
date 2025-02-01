@@ -9,6 +9,6 @@ namespace TaskList.Domain.Models
 
         public string Description { get; set; }
 
-        public bool Done { get; set; }
+        public bool IsDone { get; set; }
     }
 }

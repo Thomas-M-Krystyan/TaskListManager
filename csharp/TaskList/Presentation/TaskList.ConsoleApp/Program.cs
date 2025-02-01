@@ -84,7 +84,7 @@ namespace TaskList.ConsoleApp
 
                 foreach (TaskItem task in project.Value.Tasks)
                 {
-                    _console.WriteLine("    [{0}] {1}: {2}", task.Done ? 'x' : ' ', task.Id, task.Description);
+                    _console.WriteLine("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Description);
                 }
 
                 _console.WriteLine();
@@ -122,7 +122,7 @@ namespace TaskList.ConsoleApp
                 return;
             }
 
-            projectTasks.Tasks.Add(new TaskItem { Id = NextId(), Description = description, Done = false });
+            projectTasks.Tasks.Add(new TaskItem { Id = NextId(), Description = description, IsDone = false });
         }
 
         private void Check(string idString)
@@ -135,7 +135,7 @@ namespace TaskList.ConsoleApp
             SetDone(idString, false);
         }
 
-        private void SetDone(string idString, bool done)
+        private void SetDone(string idString, bool isDone)
         {
             int id = int.Parse(idString);
 
@@ -151,7 +151,7 @@ namespace TaskList.ConsoleApp
                 return;
             }
 
-            identifiedTask.Done = done;
+            identifiedTask.IsDone = isDone;
         }
 
         private void Help()
