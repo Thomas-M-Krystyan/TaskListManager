@@ -9,10 +9,10 @@ namespace TaskList.ConsoleApp
         private const string QUIT = "quit";
         public static readonly string startupText = "Welcome to TaskList! Type 'help' for available commands.";
 
-        private readonly IDictionary<string, ProjectItem> tasks = new Dictionary<string, ProjectItem>();
-        private readonly IConsole console;
+        private readonly Dictionary<string, ProjectItem> _tasks = new Dictionary<string, ProjectItem>();
+        private readonly IConsole _console;
 
-        private long lastId = 0;
+        private long _lastId = 0;
 
         public static void Main(string[] args)
         {
@@ -21,16 +21,19 @@ namespace TaskList.ConsoleApp
 
         public Program(IConsole console)
         {
-            this.console = console;
+            _console = console;
         }
 
         public void Run()
         {
-            console.WriteLine(startupText);
+            _console.WriteLine(startupText);
+
             while (true)
             {
-                console.Write("> ");
-                string command = console.ReadLine();
+                _console.Write("> ");
+
+                string command = _console.ReadLine();
+
                 if (command == QUIT)
                 {
                     break;
@@ -44,23 +47,29 @@ namespace TaskList.ConsoleApp
         {
             string[] commandRest = commandLine.Split(" ".ToCharArray(), 2);
             string command = commandRest[0];
+
             switch (command)
             {
                 case "show":
                     Show();
                     break;
+
                 case "add":
                     Add(commandRest[1]);
                     break;
+
                 case "check":
                     Check(commandRest[1]);
                     break;
+
                 case "uncheck":
                     Uncheck(commandRest[1]);
                     break;
+
                 case "help":
                     Help();
                     break;
+
                 default:
                     Error(command);
                     break;
@@ -69,15 +78,16 @@ namespace TaskList.ConsoleApp
 
         private void Show()
         {
-            foreach (KeyValuePair<string, ProjectItem> project in tasks)
+            foreach (KeyValuePair<string, ProjectItem> project in _tasks)
             {
-                console.WriteLine(project.Key);
+                _console.WriteLine(project.Key);
+
                 foreach (TaskItem task in project.Value.Tasks)
                 {
-                    console.WriteLine("    [{0}] {1}: {2}", task.Done ? 'x' : ' ', task.Id, task.Description);
+                    _console.WriteLine("    [{0}] {1}: {2}", task.Done ? 'x' : ' ', task.Id, task.Description);
                 }
 
-                console.WriteLine();
+                _console.WriteLine();
             }
         }
 
@@ -85,6 +95,7 @@ namespace TaskList.ConsoleApp
         {
             string[] subcommandRest = commandLine.Split(" ".ToCharArray(), 2);
             string subcommand = subcommandRest[0];
+
             if (subcommand == "project")
             {
                 AddProject(subcommandRest[1]);
@@ -92,20 +103,22 @@ namespace TaskList.ConsoleApp
             else if (subcommand == "task")
             {
                 string[] projectTask = subcommandRest[1].Split(" ".ToCharArray(), 2);
+
                 AddTask(projectTask[0], projectTask[1]);
             }
         }
 
         private void AddProject(string name)
         {
-            tasks[name] = new ProjectItem { Name = name, Tasks = [] };
+            _tasks[name] = new ProjectItem { Name = name, Tasks = [] };
         }
 
         private void AddTask(string project, string description)
         {
-            if (!tasks.TryGetValue(project, out ProjectItem projectTasks))
+            if (!_tasks.TryGetValue(project, out ProjectItem projectTasks))
             {
                 Console.WriteLine("Could not find a project with the name \"{0}\".", project);
+
                 return;
             }
 
@@ -125,13 +138,16 @@ namespace TaskList.ConsoleApp
         private void SetDone(string idString, bool done)
         {
             int id = int.Parse(idString);
-            TaskItem? identifiedTask = tasks
+
+            TaskItem? identifiedTask = _tasks
                 .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == id))
                 .Where(task => task != null)
                 .FirstOrDefault();
+
             if (identifiedTask == null)
             {
-                console.WriteLine("Could not find a task with an ID of {0}.", id);
+                _console.WriteLine("Could not find a task with an ID of {0}.", id);
+
                 return;
             }
 
@@ -140,23 +156,23 @@ namespace TaskList.ConsoleApp
 
         private void Help()
         {
-            console.WriteLine("Commands:");
-            console.WriteLine("  show");
-            console.WriteLine("  add project <project name>");
-            console.WriteLine("  add task <project name> <task description>");
-            console.WriteLine("  check <task ID>");
-            console.WriteLine("  uncheck <task ID>");
-            console.WriteLine();
+            _console.WriteLine("Commands:");
+            _console.WriteLine("  show");
+            _console.WriteLine("  add project <project name>");
+            _console.WriteLine("  add task <project name> <task description>");
+            _console.WriteLine("  check <task ID>");
+            _console.WriteLine("  uncheck <task ID>");
+            _console.WriteLine();
         }
 
         private void Error(string command)
         {
-            console.WriteLine("I don't know what the command \"{0}\" is.", command);
+            _console.WriteLine("I don't know what the command \"{0}\" is.", command);
         }
 
         private long NextId()
         {
-            return ++lastId;
+            return ++_lastId;
         }
     }
 }
