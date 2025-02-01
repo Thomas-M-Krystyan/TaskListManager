@@ -12,6 +12,10 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
         private sealed class TestTaskManager() : ConcurrentTaskManager()
         {
+            public override CommandResponse DisplayTaskList()
+            {
+                throw new NotImplementedException();
+            }
         }
         #endregion
 
