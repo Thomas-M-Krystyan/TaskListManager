@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics.Metrics;
 using System.Text.Json;
 using TaskList.Domain.Models;
+using TaskList.Logic.Helpers.Interfaces;
 using TaskList.Logic.Managers.Interfaces;
 using TaskList.Logic.Responses;
 
@@ -12,6 +12,16 @@ namespace TaskList.Logic.Managers
     public abstract class ConcurrentTaskManager : ITaskManager
     {
         private readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
+
+        private readonly ICounterRegister _counter;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConcurrentTaskManager"/> class.
+        /// </summary>
+        protected ConcurrentTaskManager(ICounterRegister counter)
+        {
+            _counter = counter;
+        }
 
         /// <inheritdoc cref="ITaskManager.DisplayTaskList()"/>
         public IReadOnlyDictionary<string, ProjectItem> GetTaskList()
@@ -57,7 +67,7 @@ namespace TaskList.Logic.Managers
             {
                 if (_taskList.TryGetValue(projectName, out ProjectItem project))
                 {
-                    project.Tasks.Add(new TaskItem { Id = 1, Description = taskName, IsDone = false });
+                    project.Tasks.Add(new TaskItem { Id = _counter.GetNextTaskId(), Description = taskName, IsDone = false });
 
                     return CommandResponse.Success(content: string.Format("The task with name \"{0}\" was added to the project \"{1}\"", taskName, projectName));
                 }
