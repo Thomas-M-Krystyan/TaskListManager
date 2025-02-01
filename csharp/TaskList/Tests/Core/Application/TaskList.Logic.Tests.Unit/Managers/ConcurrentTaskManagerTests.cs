@@ -36,6 +36,30 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 Assert.That(taskListCountAfter, Is.EqualTo(1));
             });
         }
+
+        [Test]
+        public void AddProject_Project_DuplicatedName_ReturnsFailure()
+        {
+            // Arrange
+            var taskManager = new TestTaskManager();
+
+            // Act
+            var taskListCountBefore = taskManager.TaskList.Count;
+
+            var response = taskManager.AddProject(ProjectName);
+            response = taskManager.AddProject(ProjectName);
+
+            var taskListCountAfter = taskManager.TaskList.Count;
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(taskListCountBefore, Is.Zero);
+                Assert.That(response.IsFailure, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation failed: Project with the same name already exists."));
+                Assert.That(taskListCountAfter, Is.EqualTo(1));  // Not 2
+            });
+        }
         #endregion
     }
 }
