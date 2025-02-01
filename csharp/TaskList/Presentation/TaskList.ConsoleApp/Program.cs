@@ -11,7 +11,7 @@ namespace TaskList.ConsoleApp
         /// <summary>
         /// The entry point of the application.
         /// </summary>
-        public static void Main(string[] args)
+        public static void Main(string[] _)
         {
             ServiceProvider serviceProvider = new ServiceCollection()
                 // Dependency Injection
