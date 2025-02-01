@@ -9,7 +9,7 @@ namespace TaskList.ConsoleApp
         private const string QUIT = "quit";
         public static readonly string startupText = "Welcome to TaskList! Type 'help' for available commands.";
 
-        private readonly IDictionary<string, IList<TaskItem>> tasks = new Dictionary<string, IList<TaskItem>>();
+        private readonly IDictionary<string, ProjectItem> tasks = new Dictionary<string, ProjectItem>();
         private readonly IConsole console;
 
         private long lastId = 0;
@@ -69,10 +69,10 @@ namespace TaskList.ConsoleApp
 
         private void Show()
         {
-            foreach (KeyValuePair<string, IList<TaskItem>> project in tasks)
+            foreach (KeyValuePair<string, ProjectItem> project in tasks)
             {
                 console.WriteLine(project.Key);
-                foreach (TaskItem task in project.Value)
+                foreach (TaskItem task in project.Value.Tasks)
                 {
                     console.WriteLine("    [{0}] {1}: {2}", task.Done ? 'x' : ' ', task.Id, task.Description);
                 }
@@ -98,18 +98,18 @@ namespace TaskList.ConsoleApp
 
         private void AddProject(string name)
         {
-            tasks[name] = [];
+            tasks[name] = new ProjectItem { Name = name, Tasks = [] };
         }
 
         private void AddTask(string project, string description)
         {
-            if (!tasks.TryGetValue(project, out IList<TaskItem> projectTasks))
+            if (!tasks.TryGetValue(project, out ProjectItem projectTasks))
             {
                 Console.WriteLine("Could not find a project with the name \"{0}\".", project);
                 return;
             }
 
-            projectTasks.Add(new TaskItem { Id = NextId(), Description = description, Done = false });
+            projectTasks.Tasks.Add(new TaskItem { Id = NextId(), Description = description, Done = false });
         }
 
         private void Check(string idString)
@@ -126,7 +126,7 @@ namespace TaskList.ConsoleApp
         {
             int id = int.Parse(idString);
             TaskItem? identifiedTask = tasks
-                .Select(project => project.Value.FirstOrDefault(task => task.Id == id))
+                .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == id))
                 .Where(task => task != null)
                 .FirstOrDefault();
             if (identifiedTask == null)
