@@ -115,14 +115,14 @@ namespace TaskList.ConsoleApp
 
         private void AddTask(string project, string description)
         {
-            if (!_tasks.TryGetValue(project, out ProjectItem projectTasks))
+            if (_tasks.TryGetValue(project, out ProjectItem projectTasks))
+            {
+                projectTasks.Tasks.Add(new TaskItem { Id = NextId(), Description = description, IsDone = false });
+            }
+            else
             {
                 Console.WriteLine("Could not find a project with the name \"{0}\".", project);
-
-                return;
             }
-
-            projectTasks.Tasks.Add(new TaskItem { Id = NextId(), Description = description, IsDone = false });
         }
 
         private void CheckCommand(string idString, bool isDone)
