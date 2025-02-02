@@ -115,6 +115,25 @@ namespace TaskList.ConsoleApp.Tests.Functional
                 ""
             );
 
+            // Deadlines
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            
+            Execute($"deadline 2 {today}");
+            Execute($"deadline 4 {today}");
+            Execute($"deadline 5 {today}");
+            Execute($"deadline 8 {today.AddDays(1)}");
+
+            Execute("today");
+            ReadLines(
+                "secrets",
+                "    [ ] 2: Destroy all humans.",
+                "",
+                "training",
+                "    [ ] 4: SOLID",
+                "    [x] 5: Coupling and Cohesion",
+                ""
+            );
+
             Execute("quit");
         }
 
