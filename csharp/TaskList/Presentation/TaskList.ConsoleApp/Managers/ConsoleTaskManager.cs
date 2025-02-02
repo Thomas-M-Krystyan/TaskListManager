@@ -39,7 +39,7 @@ namespace TaskList.ConsoleApp.Managers
                     foreach (KeyValuePair<long, TaskItem> task in project.Value.Tasks.OrderBy(task => task.Value.Id))
                     {
                         // Task description
-                        _stringBuilder.AppendLine(string.Format("    [{0}] {1}: {2}", task.Value.IsDone ? 'x' : ' ', task.Value.Id, task.Value.Name));
+                        _stringBuilder.AppendLine(GetTaskDetails(task.Value));
                     }
 
                     _stringBuilder.AppendLine();
@@ -80,5 +80,10 @@ namespace TaskList.ConsoleApp.Managers
         {
             return string.Format("I don't know what the command \"{0}\" is.", command);
         }
+
+        #region Helper methods
+        private static string GetTaskDetails(TaskItem task)
+            => string.Format("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Name);
+        #endregion
     }
 }
