@@ -34,7 +34,7 @@ namespace TaskList.ConsoleApp.Managers
                     // Project name
                     _stringBuilder.AppendLine(project.Value.Name);
 
-                    foreach (KeyValuePair<long, TaskItem> task in project.Value.Tasks.OrderBy(task => task.Value.Id))
+                    foreach (KeyValuePair<long, TaskItem> task in GetTasksSortedById(project.Value))
                     {
                         // Task description
                         _stringBuilder.AppendLine(GetTaskDetails(task.Value));
@@ -54,7 +54,30 @@ namespace TaskList.ConsoleApp.Managers
         /// <inheritdoc cref="ITaskManager.DisplayTodayTasks()"/>
         public override CommandResponse DisplayTodayTasks()
         {
-            throw new NotImplementedException();
+            try
+            {
+                _stringBuilder.Clear();
+
+                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById())
+                {
+                    // Project name
+                    _stringBuilder.AppendLine(project.Value.Name);
+
+                    foreach (KeyValuePair<long, TaskItem> task in GetTasksSortedById(project.Value))
+                    {
+                        // Task description
+                        _stringBuilder.AppendLine(GetTaskDetails(task.Value));
+                    }
+
+                    _stringBuilder.AppendLine();
+                }
+
+                return CommandResponse.Success(_stringBuilder.ToString(), true);
+            }
+            catch (Exception exception)
+            {
+                return CommandResponse.Failure(exception);
+            }
         }
 
         /// <inheritdoc cref="IConsoleTaskManager.Help()"/>
@@ -84,6 +107,9 @@ namespace TaskList.ConsoleApp.Managers
         //       matter at all from the perspective of business logic, it might be important from the user perspective
         private IOrderedEnumerable<KeyValuePair<string, ProjectItem>> GetProjectsSortedById()
             => GetTaskList().OrderBy(project => project.Value.Id);
+
+        private static IEnumerable<KeyValuePair<long, TaskItem>> GetTasksSortedById(ProjectItem project)
+            => project.Tasks.OrderBy(task => task.Value.Id);
 
         private static string GetTaskDetails(TaskItem task)
             => string.Format("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Name);
