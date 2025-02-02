@@ -16,6 +16,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         #region Data
         private const string ProjectName = "Hobby";
         private const string TaskName = "Radio";
+        private const long TaskId = 1;
         #endregion
 
         [SetUp]
@@ -125,9 +126,9 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
-            TaskListController controller = new(taskManager);
+            _ = taskManager.AddProject(ProjectName);
 
-            _ = await controller.AddProjectAsync(ProjectName);
+            TaskListController controller = new(taskManager);
 
             // Act
             ObjectResult result = (ObjectResult)await controller.AddTaskAsync(ProjectName, TaskName);
@@ -161,6 +162,56 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
             Assert.Multiple(() =>
             {
                 taskManagerMock.Verify(mock => mock.AddTask(ProjectName, TaskName), Times.Once);
+
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));
+            });
+        }
+        #endregion
+
+        #region CheckTaskAsync()
+        [Test]
+        public async Task CheckTaskAsync_HappyPath_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
+
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.CheckTaskAsync(TaskId, true);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+                Assert.That(result.Value, Is.EqualTo($"Operation succeeded: The task with ID {TaskId} was marked as finished."));
+            });
+        }
+
+        [Test]
+        public async Task CheckTaskAsync_RainyPath_IntegrationTest()
+        {
+            // Arrange
+            const string errorMessage = "CheckTaskAsync failed.";
+
+            Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
+
+            _ = taskManagerMock
+                .Setup(mock => mock.CheckTask(TaskId, true))
+                .Returns(CommandResponse.Failure(errorMessage));
+
+            TaskListController controller = new(taskManagerMock.Object);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.CheckTaskAsync(TaskId, true);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                taskManagerMock.Verify(mock => mock.CheckTask(TaskId, true), Times.Once);
 
                 Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
                 Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));
