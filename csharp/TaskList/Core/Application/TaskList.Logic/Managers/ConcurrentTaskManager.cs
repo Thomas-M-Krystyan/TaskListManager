@@ -37,8 +37,8 @@ namespace TaskList.Logic.Managers
                 ?? [];
         }
 
-        /// <inheritdoc cref="ITaskManager.DisplayTaskList()"/>
-        public abstract CommandResponse DisplayTaskList();
+        /// <inheritdoc cref="ITaskManager.DisplayAllTasks()"/>
+        public abstract CommandResponse DisplayAllTasks();
 
         /// <inheritdoc cref="ITaskManager.DisplayTodayTasks()"/>
         public abstract CommandResponse DisplayTodayTasks();

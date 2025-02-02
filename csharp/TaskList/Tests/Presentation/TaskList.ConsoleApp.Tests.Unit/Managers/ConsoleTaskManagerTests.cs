@@ -22,9 +22,9 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             _counterMock.Reset();
         }
 
-        #region DisplayTaskList()
+        #region DisplayAllTasks()
         [Test]
-        public void DisplayTaskList_TaskList_Filled_ReturnsSuccess()
+        public void DisplayAllTasks_TaskList_Filled_ReturnsSuccess()
         {
             // Arrange
             const string projectName = "Project 1";
@@ -44,7 +44,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             _ = taskManager.AddTask(projectName, taskName1);
 
             // Act
-            CommandResponse result = taskManager.DisplayTaskList();
+            CommandResponse result = taskManager.DisplayAllTasks();
 
             // Assert
             string expectedOutput =
@@ -63,13 +63,13 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
         }
 
         [Test]
-        public void DisplayTaskList_TaskList_Empty_ReturnsSuccess()
+        public void DisplayAllTasks_TaskList_Empty_ReturnsSuccess()
         {
             // Arrange
             ConsoleTaskManager taskManager = new(new StringBuilderProxy(), _counterMock.Object);
 
             // Act
-            CommandResponse result = taskManager.DisplayTaskList();
+            CommandResponse result = taskManager.DisplayAllTasks();
 
             // Assert
             Assert.Multiple(() =>
@@ -80,7 +80,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
         }
 
         [Test]
-        public void DisplayTaskList_StringBuilder_ThrowingException_ReturnsFailure()
+        public void DisplayAllTasks_StringBuilder_ThrowingException_ReturnsFailure()
         {
             // Arrange
             const string exceptionMessage = "Expected test exception";
@@ -96,7 +96,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             ConsoleTaskManager taskManager = new(_stringBuilderMock.Object, _counterMock.Object);
 
             // Act
-            CommandResponse result = taskManager.DisplayTaskList();
+            CommandResponse result = taskManager.DisplayAllTasks();
 
             // Assert
             Assert.Multiple(() =>

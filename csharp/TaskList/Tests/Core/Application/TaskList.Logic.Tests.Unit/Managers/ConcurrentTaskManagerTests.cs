@@ -21,7 +21,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
         private sealed class TestTaskManager(ICounterRegister counter) : ConcurrentTaskManager(counter)
         {
-            public override CommandResponse DisplayTaskList()
+            public override CommandResponse DisplayAllTasks()
             {
                 throw new NotImplementedException();
             }

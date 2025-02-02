@@ -18,16 +18,16 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         private const long TaskId = 1;
         #endregion
 
-        #region DisplayTaskListAsync()
+        #region DisplayAllTasksAsync()
         [Test]
-        public async Task DisplayTaskListAsync_HappyPath_IntegrationTest()
+        public async Task DisplayAllTasksAsync_HappyPath_IntegrationTest()
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
             TaskListController controller = new(taskManager);
 
             // Act
-            ObjectResult result = (ObjectResult)await controller.DisplayTaskListAsync();
+            ObjectResult result = (ObjectResult)await controller.DisplayAllTasksAsync();
 
             // Assert
             Assert.Multiple(() =>
@@ -38,26 +38,26 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
 
         [Test]
-        public async Task DisplayTaskListAsync_Exception_IntegrationTest()
+        public async Task DisplayAllTasksAsync_Exception_IntegrationTest()
         {
             // Arrange
-            string errorMessage = $"{nameof(WebApiTaskManager.DisplayTaskList)} failed.";
+            string errorMessage = $"{nameof(WebApiTaskManager.DisplayAllTasks)} failed.";
 
             Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
 
             _ = taskManagerMock
-                .Setup(mock => mock.DisplayTaskList())
+                .Setup(mock => mock.DisplayAllTasks())
                 .Returns(CommandResponse.Failure(errorMessage));
 
             TaskListController controller = new(taskManagerMock.Object);
 
             // Act
-            ObjectResult result = (ObjectResult)await controller.DisplayTaskListAsync();
+            ObjectResult result = (ObjectResult)await controller.DisplayAllTasksAsync();
 
             // Assert
             Assert.Multiple(() =>
             {
-                taskManagerMock.Verify(mock => mock.DisplayTaskList(), Times.Once);
+                taskManagerMock.Verify(mock => mock.DisplayAllTasks(), Times.Once);
 
                 Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
                 Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));

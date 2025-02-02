@@ -18,8 +18,8 @@ namespace TaskList.WebApi.Managers
         {
         }
 
-        /// <inheritdoc cref="ITaskManager.DisplayTaskList()"/>
-        public override CommandResponse DisplayTaskList()
+        /// <inheritdoc cref="ITaskManager.DisplayAllTasks()"/>
+        public override CommandResponse DisplayAllTasks()
         {
             try
             {

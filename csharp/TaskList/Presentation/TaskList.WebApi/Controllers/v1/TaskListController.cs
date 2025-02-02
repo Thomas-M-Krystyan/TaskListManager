@@ -41,9 +41,9 @@ namespace TaskList.WebApi.Controllers.v1
         /// </returns>
         [HttpGet]
         [Route("tasks")]
-        public async Task<IActionResult> DisplayTaskListAsync()
+        public async Task<IActionResult> DisplayAllTasksAsync()
         {
-            CommandResponse response = await Task.Run(_taskManager.DisplayTaskList);
+            CommandResponse response = await Task.Run(_taskManager.DisplayAllTasks);
 
             return response.IsSuccess
                 ? Ok(response.Content)

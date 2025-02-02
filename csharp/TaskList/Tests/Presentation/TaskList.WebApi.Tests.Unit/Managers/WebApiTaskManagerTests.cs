@@ -12,15 +12,15 @@ namespace TaskList.WebApi.Tests.Unit.Managers
         private readonly Mock<ICounterRegister> _counterMock = new(MockBehavior.Strict);
         #endregion
 
-        #region DisplayTaskList()
+        #region DisplayAllTasks()
         [Test]
-        public void DisplayTaskList_TaskList_Empty_ReturnsSuccess()
+        public void DisplayAllTasks_TaskList_Empty_ReturnsSuccess()
         {
             // Arrange
             WebApiTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            CommandResponse response = taskManager.DisplayTaskList();
+            CommandResponse response = taskManager.DisplayAllTasks();
 
             // Assert
             Assert.Multiple(() =>
@@ -31,7 +31,7 @@ namespace TaskList.WebApi.Tests.Unit.Managers
         }
 
         [Test]
-        public void DisplayTaskList_TaskList_Filled_ReturnsSuccess()
+        public void DisplayAllTasks_TaskList_Filled_ReturnsSuccess()
         {
             // Arrange
             _ = _counterMock
@@ -51,7 +51,7 @@ namespace TaskList.WebApi.Tests.Unit.Managers
             _ = taskManager.AddTask(projectName, taskName);
 
             // Act
-            CommandResponse response = taskManager.DisplayTaskList();
+            CommandResponse response = taskManager.DisplayAllTasks();
 
             // Assert
             Assert.Multiple(() =>

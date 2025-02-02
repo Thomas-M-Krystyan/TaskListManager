@@ -96,7 +96,7 @@ namespace TaskList.ConsoleApp.Controllers
         #region Commands
         private void ShowCommand()
         {
-            _console.Write(_taskManager.DisplayTaskList().Content);
+            _console.Write(_taskManager.DisplayAllTasks().Content);
 
             // TODO: The status of the operation could be used for UI/UX purposes
         }

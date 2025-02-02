@@ -23,7 +23,7 @@ namespace TaskList.Logic.Managers.Interfaces
         /// <returns>
         ///   A string representation of internal task list.
         /// </returns>
-        public CommandResponse DisplayTaskList();
+        public CommandResponse DisplayAllTasks();
 
         /// <summary>
         /// Displays <see cref="ProjectItem"/>s and <see cref="TaskItem"/>s with the deadline set on "today".
