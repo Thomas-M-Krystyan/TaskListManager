@@ -26,6 +26,9 @@ namespace TaskList.Domain.Models
         /// <summary>
         /// The constructor used by the JSON converter to deserialize projects.
         /// </summary>
+        /// <param name="id">The unique identifier of the project.</param>
+        /// <param name="name">The name of the project.</param>
+        /// <param name="tasks">The tasks associated with the project.</param>
         [JsonConstructor]
         internal ProjectItem(long id, string name, Dictionary<long, TaskItem> tasks)
         {
