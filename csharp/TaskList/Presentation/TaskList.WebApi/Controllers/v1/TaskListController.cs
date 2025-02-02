@@ -31,7 +31,7 @@ namespace TaskList.WebApi.Controllers.v1
         }
 
         /// <summary>
-        /// Displays the list of projects and tasks.
+        /// Displays the list of all stored tasks.
         /// </summary>
         /// <remarks>
         ///   URL: api/v1/tasklist/tasks
@@ -44,6 +44,26 @@ namespace TaskList.WebApi.Controllers.v1
         public async Task<IActionResult> DisplayAllTasksAsync()
         {
             CommandResponse response = await Task.Run(_taskManager.DisplayAllTasks);
+
+            return response.IsSuccess
+                ? Ok(response.Content)
+                : BadRequest(response.Content);
+        }
+
+        /// <summary>
+        /// Displays the list of tasks with deadline set to 'today'.
+        /// </summary>
+        /// <remarks>
+        ///   URL: api/v1/tasklist/tasks_today
+        /// </remarks>
+        /// <returns>
+        ///   The status of the operation represented by HTTP Status Code and the message.
+        /// </returns>
+        [HttpGet]
+        [Route("tasks_today")]
+        public async Task<IActionResult> DisplayTodayTasksAsync()
+        {
+            CommandResponse response = await Task.Run(_taskManager.DisplayTodayTasks);
 
             return response.IsSuccess
                 ? Ok(response.Content)

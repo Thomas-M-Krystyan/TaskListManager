@@ -16,6 +16,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         private const string ProjectName = "Hobby";
         private const string TaskName = "Radio";
         private const long TaskId = 1;
+        private const string EmptyJson = "{}";
         #endregion
 
         #region DisplayAllTasksAsync()
@@ -33,7 +34,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
             Assert.Multiple(() =>
             {
                 Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
-                Assert.That(result.Value, Is.EqualTo("{}"));
+                Assert.That(result.Value, Is.EqualTo(EmptyJson));
             });
         }
 
@@ -58,6 +59,53 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
             Assert.Multiple(() =>
             {
                 taskManagerMock.Verify(mock => mock.DisplayAllTasks(), Times.Once);
+
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));
+            });
+        }
+        #endregion
+
+        #region DisplayTodayTasks()
+        [Test]
+        public async Task DisplayTodayTasks_HappyPath_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.DisplayTodayTasksAsync();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+                Assert.That(result.Value, Is.EqualTo(EmptyJson));
+            });
+        }
+
+        [Test]
+        public async Task DisplayTodayTasks_Exception_IntegrationTest()
+        {
+            // Arrange
+            string errorMessage = $"{nameof(WebApiTaskManager.DisplayTodayTasks)} failed.";
+
+            Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
+
+            _ = taskManagerMock
+                .Setup(mock => mock.DisplayTodayTasks())
+                .Returns(CommandResponse.Failure(errorMessage));
+
+            TaskListController controller = new(taskManagerMock.Object);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.DisplayTodayTasksAsync();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                taskManagerMock.Verify(mock => mock.DisplayTodayTasks(), Times.Once);
 
                 Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
                 Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));
