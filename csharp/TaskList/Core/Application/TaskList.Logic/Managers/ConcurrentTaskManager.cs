@@ -35,15 +35,21 @@ namespace TaskList.Logic.Managers
         /// <inheritdoc cref="ITaskManager.GetAllProjects()"/>
         public IReadOnlyDictionary<string, ProjectItem> GetAllProjects()
         {
+            lock (transactionPadlock)
+            {
             return JsonSerializer.Deserialize<Dictionary<string, ProjectItem>>(
                 JsonSerializer.Serialize(_projects)) ?? [];
+        }
         }
 
         /// <inheritdoc cref="ITaskManager.GetAllTasks()"/>
         public IReadOnlyDictionary<long, TaskItem> GetAllTasks()
         {
+            lock (transactionPadlock)
+            {
             return JsonSerializer.Deserialize<Dictionary<long, TaskItem>>(
                 JsonSerializer.Serialize(_tasks)) ?? [];
+        }
         }
 
         /// <inheritdoc cref="ITaskManager.DisplayAllTasks()"/>
