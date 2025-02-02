@@ -78,6 +78,10 @@ namespace TaskList.ConsoleApp.Controllers
                     SetDoneCommand(commandRest[1], false);
                     break;
 
+                case "deadline":
+                    SetDeadlineCommand(commandRest[1]);
+                    break;
+
                 case "help":
                     HelpCommand();
                     break;
@@ -110,9 +114,11 @@ namespace TaskList.ConsoleApp.Controllers
             }
             else if (subcommand.Equals("task", StringComparison.InvariantCultureIgnoreCase))
             {
-                string[] projectTask = subcommandRest[1].Split(' ', 2);
+                string[] subcommands = subcommandRest[1].Split(' ', 2);
+                string projectName = subcommands[0];
+                string taskName = subcommands[1];
 
-                CommandResponse result = _taskManager.AddTask(projectTask[0], projectTask[1]);
+                CommandResponse result = _taskManager.AddTask(projectName, taskName);
 
                 if (result.IsFailure)
                 {
@@ -130,6 +136,26 @@ namespace TaskList.ConsoleApp.Controllers
             if (long.TryParse(idString, out long taskId))
             {
                 CommandResponse result = _taskManager.CheckTask(taskId, isDone);
+
+                if (result.IsFailure)
+                {
+                    _console.WriteLine(result.Content);
+                }
+            }
+
+            // TODO: The status of the operation could be used for UI/UX purposes
+        }
+
+        private void SetDeadlineCommand(string commandLine)
+        {
+            string[] subcommands = commandLine.Split(' ', 2);
+            string taskStringId = subcommands[0];
+            string taskStringDeadline = subcommands[1];
+
+            if (long.TryParse(taskStringId, out long taskId) &&
+                DateOnly.TryParse(taskStringDeadline, out DateOnly deadline))
+            {
+                CommandResponse result = _taskManager.SetDeadline(taskId, deadline);
 
                 if (result.IsFailure)
                 {

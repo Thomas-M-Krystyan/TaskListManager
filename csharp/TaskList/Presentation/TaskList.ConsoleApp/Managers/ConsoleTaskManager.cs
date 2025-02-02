@@ -63,6 +63,7 @@ namespace TaskList.ConsoleApp.Managers
                 "  add task <project name> <task description>\r\n" +
                 "  check <task ID>\r\n" +
                 "  uncheck <task ID>\r\n" +
+                "  deadline <task ID> <deadline>\r\n" +
                 "  quit\r\n";
 
             return helpMessage;
