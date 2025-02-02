@@ -30,7 +30,7 @@ namespace TaskList.Logic.Managers.Interfaces
         /// Displays all currently stored <see cref="ProjectItem"/>s and <see cref="TaskItem"/>s.
         /// </summary>
         /// <returns>
-        ///   A string representation of internal task list.
+        ///   The result of the operation.
         /// </returns>
         public CommandResponse DisplayAllTasks();
 
@@ -38,7 +38,7 @@ namespace TaskList.Logic.Managers.Interfaces
         /// Displays <see cref="ProjectItem"/>s and <see cref="TaskItem"/>s with the deadline set on "today".
         /// </summary>
         /// <returns>
-        ///   A string representation of internal task list.
+        ///   The result of the operation.
         /// </returns>
         public CommandResponse DisplayTodayTasks();
 
