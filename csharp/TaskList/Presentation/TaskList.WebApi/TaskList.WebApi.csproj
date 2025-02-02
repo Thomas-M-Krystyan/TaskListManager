@@ -22,4 +22,9 @@
     <ProjectReference Include="..\..\Core\Application\TaskList.Logic\TaskList.Logic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="TaskList.WebApi.Tests.Unit" />
+    <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+  </ItemGroup>
+
 </Project>
