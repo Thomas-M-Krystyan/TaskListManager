@@ -29,7 +29,7 @@ namespace TaskList.ConsoleApp.Managers
             {
                 _stringBuilder.Clear();
 
-                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById())
+                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetTaskList()))
                 {
                     // Project name
                     _stringBuilder.AppendLine(project.Value.Name);
@@ -58,7 +58,7 @@ namespace TaskList.ConsoleApp.Managers
             {
                 _stringBuilder.Clear();
 
-                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById())
+                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetTaskList()))
                 {
                     // Project name
                     _stringBuilder.AppendLine(project.Value.Name);
@@ -105,8 +105,8 @@ namespace TaskList.ConsoleApp.Managers
         #region Helper methods
         // NOTE: Order of elements is not guaranteed in a ConcurrentDictionary. Even if the order of elements doesn't
         //       matter at all from the perspective of business logic, it might be important from the user perspective
-        private IOrderedEnumerable<KeyValuePair<string, ProjectItem>> GetProjectsSortedById()
-            => GetTaskList().OrderBy(project => project.Value.Id);
+        private static IOrderedEnumerable<KeyValuePair<string, ProjectItem>> GetProjectsSortedById(IReadOnlyDictionary<string, ProjectItem> taskList)
+            => taskList.OrderBy(project => project.Value.Id);
 
         private static IEnumerable<KeyValuePair<long, TaskItem>> GetTasksSortedById(ProjectItem project)
             => project.Tasks.OrderBy(task => task.Value.Id);
