@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using TaskList.Domain.Models;
 using TaskList.Logic.Helpers.Interfaces;
 using TaskList.Logic.Managers;
 using TaskList.Logic.Managers.Interfaces;
@@ -35,7 +36,21 @@ namespace TaskList.WebApi.Managers
         /// <inheritdoc cref="ITaskManager.DisplayTodayTasks()"/>
         public override CommandResponse DisplayTodayTasks()
         {
-            throw new NotImplementedException();
+            try
+            {
+                DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+                Dictionary<long, TaskItem> todayTasks = GetAllTasks()
+                    .Where(task => task.Value.Deadline.Equals(today))
+                    .ToDictionary();
+
+                return CommandResponse.Success(
+                    JsonSerializer.Serialize(todayTasks), true);
+            }
+            catch (Exception exception)
+            {
+                return CommandResponse.Failure(exception);
+            }
         }
     }
 }
