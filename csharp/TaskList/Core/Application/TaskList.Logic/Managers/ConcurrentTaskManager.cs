@@ -45,6 +45,7 @@ namespace TaskList.Logic.Managers
         {
             try
             {
+                // Add a new project to the task list
                 bool isSuccess = _taskList.TryAdd(projectName, new ProjectItem(_counter.GetNextProjectId(), projectName));
 
                 return isSuccess
@@ -64,10 +65,12 @@ namespace TaskList.Logic.Managers
             {
                 if (_taskList.TryGetValue(projectName, out ProjectItem project))
                 {
+                    // Create new task and add it to the project
                     long newTaskId = _counter.GetNextTaskId();
-
                     project.Tasks[newTaskId] = new TaskItem(newTaskId, taskName);
-                    _primaryKeysMap[newTaskId] = projectName;  // Task ID => Project Name
+
+                    // Create mapping between Task ID (PK) and Project Name (PK)
+                    _primaryKeysMap[newTaskId] = projectName;
 
                     return CommandResponse.Success(content: string.Format("The task with name \"{0}\" was added to the project \"{1}\"", taskName, projectName));
                 }
@@ -90,10 +93,11 @@ namespace TaskList.Logic.Managers
                 // Determine the name of the related project
                 if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
                 {
+                    // Find the task by ID
                     TaskItem existingTask = _taskList[relatedProjectName].Tasks[taskId];
 
+                    // Update the task status
                     existingTask.IsDone = isDone;
-
                     UpdateTask(relatedProjectName, existingTask);
 
                     return CommandResponse.Success(content: string.Format("The task with ID {0} was marked as {1}", taskId, isDone ? "finished" : "unfinished"));
@@ -115,10 +119,11 @@ namespace TaskList.Logic.Managers
                 // Determine the name of the related project
                 if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
                 {
+                    // Find the task by ID
                     TaskItem existingTask = _taskList[relatedProjectName].Tasks[taskId];
 
+                    // Update the task status
                     existingTask.Deadline = deadline;
-
                     UpdateTask(relatedProjectName, existingTask);
 
                     return CommandResponse.Success(content: string.Format("The deadline for the task with ID {0} was set to {1}", taskId, deadline));
