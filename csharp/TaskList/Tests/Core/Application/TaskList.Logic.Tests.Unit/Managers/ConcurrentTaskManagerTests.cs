@@ -334,7 +334,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
         }
 
         [Test]
-        public void CheckTask_MarkAsDone_Task_Unfinished_ReturnsSuccess()
+        public void CheckTask_MarkAsDone_Task_Existing_Unfinished_ReturnsSuccess()
         {
             // Arrange
             _ = _counterMock
@@ -368,7 +368,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
         }
 
         [Test]
-        public void CheckTask_MarkAsUndone_Task_Finished_ReturnsSuccess()
+        public void CheckTask_MarkAsUndone_Task_Existing_Finished_ReturnsSuccess()
         {
             // Arrange
             _ = _counterMock
