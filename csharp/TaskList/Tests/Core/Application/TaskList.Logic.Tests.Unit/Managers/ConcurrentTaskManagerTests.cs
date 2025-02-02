@@ -25,6 +25,11 @@ namespace TaskList.Logic.Tests.Unit.Managers
             {
                 throw new NotImplementedException();
             }
+
+            public override CommandResponse DisplayTodayTasks()
+            {
+                throw new NotImplementedException();
+            }
         }
         #endregion
 

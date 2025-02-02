@@ -53,6 +53,12 @@ namespace TaskList.ConsoleApp.Managers
             }
         }
 
+        /// <inheritdoc cref="ITaskManager.DisplayTodayTasks()"/>
+        public override CommandResponse DisplayTodayTasks()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc cref="IConsoleTaskManager.Help()"/>
         public string Help()
         {

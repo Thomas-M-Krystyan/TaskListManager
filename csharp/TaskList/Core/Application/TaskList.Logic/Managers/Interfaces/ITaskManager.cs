@@ -26,6 +26,14 @@ namespace TaskList.Logic.Managers.Interfaces
         public CommandResponse DisplayTaskList();
 
         /// <summary>
+        /// Displays <see cref="ProjectItem"/>s and <see cref="TaskItem"/>s with the deadline set on "today".
+        /// </summary>
+        /// <returns>
+        ///   A string representation of internal task list.
+        /// </returns>
+        public CommandResponse DisplayTodayTasks();
+
+        /// <summary>
         /// Adds <see cref="ProjectItem"/> to the internal task list.
         /// </summary>
         /// <param name="projectName">The name of the project to add.</param>

@@ -31,5 +31,11 @@ namespace TaskList.WebApi.Managers
                 return CommandResponse.Failure(exception);
             }
         }
+
+        /// <inheritdoc cref="ITaskManager.DisplayTodayTasks()"/>
+        public override CommandResponse DisplayTodayTasks()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
