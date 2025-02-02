@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Threading.Tasks;
 using TaskList.Logic.Helpers;
 using TaskList.Logic.Responses;
 using TaskList.WebApi.Controllers.v1;
@@ -308,6 +309,96 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
             Assert.Multiple(() =>
             {
                 taskManagerMock.Verify(mock => mock.CheckTask(TaskId, true), Times.Once);
+
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));
+            });
+        }
+        #endregion
+
+        #region SetDeadlineAsync()
+        [Test]
+        public async Task SetDeadlineAsync_HappyPath_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
+
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.SetDeadlineAsync(TaskId, DateOnly.MinValue);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+                Assert.That(result.Value, Is.EqualTo($"Operation succeeded: The deadline for the task with ID {TaskId} was set to 01.01.0001."));
+            });
+        }
+
+        [Test]
+        public async Task SetDeadlineAsync_RainyPath_NoProject_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.SetDeadlineAsync(TaskId, DateOnly.MinValue);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
+            });
+        }
+
+        [Test]
+        public async Task SetDeadlineAsync_RainyPath_NoTask_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+
+            _ = taskManager.AddProject(ProjectName);
+
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.SetDeadlineAsync(TaskId, DateOnly.MinValue);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
+            });
+        }
+
+        [Test]
+        public async Task SetDeadlineAsync_Exception_IntegrationTest()
+        {
+            // Arrange
+            string errorMessage = $"{nameof(WebApiTaskManager.SetDeadline)} failed.";
+
+            Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
+
+            _ = taskManagerMock
+                .Setup(mock => mock.SetDeadline(TaskId, DateOnly.MinValue))
+                .Returns(CommandResponse.Failure(errorMessage));
+
+            TaskListController controller = new(taskManagerMock.Object);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.SetDeadlineAsync(TaskId, DateOnly.MinValue);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                taskManagerMock.Verify(mock => mock.SetDeadline(TaskId, DateOnly.MinValue), Times.Once);
 
                 Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
                 Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));
