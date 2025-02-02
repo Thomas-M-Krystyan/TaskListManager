@@ -40,12 +40,15 @@ namespace TaskList.WebApi.Managers
             {
                 DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
-                Dictionary<long, TaskItem> todayTasks = GetAllTasks()
+                Dictionary<long, TaskItem> todayTasksSortedById = GetAllTasks()
+                    // Filter by deadline (today)
                     .Where(task => task.Value.Deadline.Equals(today))
+                    // Sort by ID
+                    .OrderBy(task => task.Key)
                     .ToDictionary();
 
                 return CommandResponse.Success(
-                    JsonSerializer.Serialize(todayTasks), true);
+                    JsonSerializer.Serialize(todayTasksSortedById), true);
             }
             catch (Exception exception)
             {
@@ -58,8 +61,17 @@ namespace TaskList.WebApi.Managers
         {
             try
             {
+                Dictionary<long, TaskItem> tasksSortedByDeadlineProjectsAndId = GetAllTasks()
+                    // Sort by deadline
+                    .OrderBy(task => task.Value.Deadline)
+                    // Sort by projects
+                    .ThenBy(task => task.Value.ProjectName)
+                    // Sort by ID
+                    .ThenBy(task => task.Key)
+                    .ToDictionary();
+
                 return CommandResponse.Success(
-                    JsonSerializer.Serialize(new { }), true);
+                    JsonSerializer.Serialize(tasksSortedByDeadlineProjectsAndId), true);
             }
             catch (Exception exception)
             {
