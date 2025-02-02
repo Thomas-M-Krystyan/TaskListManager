@@ -63,7 +63,7 @@ namespace TaskList.ConsoleApp.Controllers
             switch (command.ToLower())  // TODO: This can be improved by using Spans or if-else statements. ToLower() is working but introducing overhead
             {
                 case "show":
-                    ShowCommand();
+                    ShowAllCommand();
                     break;
 
                 case "add":
@@ -94,7 +94,7 @@ namespace TaskList.ConsoleApp.Controllers
         #endregion
 
         #region Commands
-        private void ShowCommand()
+        private void ShowAllCommand()
         {
             _console.Write(_taskManager.DisplayAllTasks().Content);
 
