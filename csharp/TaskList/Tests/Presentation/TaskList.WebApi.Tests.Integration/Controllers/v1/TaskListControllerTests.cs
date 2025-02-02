@@ -46,7 +46,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
 
         [Test]
-        public async Task DisplayTaskListAsync_RainyPath_IntegrationTest()
+        public async Task DisplayTaskListAsync_Exception_IntegrationTest()
         {
             // Arrange
             const string errorMessage = "DisplayTaskList failed.";
@@ -93,7 +93,27 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
 
         [Test]
-        public async Task AddProjectAsync_RainyPath_IntegrationTest()
+        public async Task AddProjectAsync_RainyPath_Duplicate_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            _ = taskManager.AddProject(ProjectName);
+
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.AddProjectAsync(ProjectName);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: Project with the same name already exists."));
+            });
+        }
+
+        [Test]
+        public async Task AddProjectAsync_Exception_IntegrationTest()
         {
             // Arrange
             const string errorMessage = "AddProjectAsync failed.";
@@ -142,7 +162,25 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
 
         [Test]
-        public async Task AddTaskAsync_RainyPath_IntegrationTest()
+        public async Task AddTaskAsync_RainyPath_NoProject_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.AddTaskAsync(ProjectName, TaskName);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: Could not find a project with the name \"{ProjectName}\"."));
+            });
+        }
+
+        [Test]
+        public async Task AddTaskAsync_Exception_IntegrationTest()
         {
             // Arrange
             const string errorMessage = "AddTaskAsync failed.";
@@ -171,7 +209,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
 
         #region CheckTaskAsync()
         [Test]
-        public async Task CheckTaskAsync_HappyPath_IntegrationTest()
+        public async Task CheckTaskAsync_HappyPath_Finished_IntegrationTest()
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
@@ -192,7 +230,68 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
 
         [Test]
-        public async Task CheckTaskAsync_RainyPath_IntegrationTest()
+        public async Task CheckTaskAsync_HappyPath_Unfinished_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
+            _ = taskManager.CheckTask(
+                taskManager.GetTaskList().First().Value.Id, true);
+
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.CheckTaskAsync(TaskId, false);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+                Assert.That(result.Value, Is.EqualTo($"Operation succeeded: The task with ID {TaskId} was marked as unfinished."));
+            });
+        }
+
+        [Test]
+        public async Task CheckTaskAsync_RainyPath_NoProject_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.CheckTaskAsync(TaskId, true);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
+            });
+        }
+
+        [Test]
+        public async Task CheckTaskAsync_RainyPath_NoTask_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            _ = taskManager.AddProject(ProjectName);
+
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.CheckTaskAsync(TaskId, true);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
+            });
+        }
+
+        [Test]
+        public async Task CheckTaskAsync_Exception_IntegrationTest()
         {
             // Arrange
             const string errorMessage = "CheckTaskAsync failed.";
