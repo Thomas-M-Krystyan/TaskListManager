@@ -427,5 +427,83 @@ namespace TaskList.Logic.Tests.Unit.Managers
             });
         }
         #endregion
+
+        #region SetDeadline()
+        [Test]
+        public void SetDeadline_Project_NotExisting_ReturnsFailure()
+        {
+            // Arrange
+            TestTaskManager taskManager = new(_counterMock.Object);
+
+            // Act
+            CommandResponse response = taskManager.SetDeadline(TaskId, DateOnly.MinValue);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.IsFailure, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
+            });
+        }
+
+        [Test]
+        public void SetDeadline_Task_NotExisting_ReturnsFailure()
+        {
+            // Arrange
+            _ = _counterMock
+                .Setup(counter => counter.GetNextProjectId())
+                .Returns(default(long));
+
+            TestTaskManager taskManager = new(_counterMock.Object);
+
+            _ = taskManager.AddProject(ProjectName);
+
+            // Act
+            CommandResponse response = taskManager.SetDeadline(TaskId, DateOnly.MinValue);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
+
+                Assert.That(response.IsFailure, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
+            });
+        }
+
+        [Test]
+        public void SetDeadline_Task_Existing_ReturnsSuccess()
+        {
+            // Arrange
+            _ = _counterMock
+                .Setup(counter => counter.GetNextProjectId())
+                .Returns(default(long));
+
+            _ = _counterMock
+                .Setup(counter => counter.GetNextTaskId())
+                .Returns(default(long));
+
+            TestTaskManager taskManager = new(_counterMock.Object);
+
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
+
+            long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
+
+            // Act
+            CommandResponse response = taskManager.SetDeadline(taskId, DateOnly.MinValue);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
+                _counterMock.Verify(mock => mock.GetNextTaskId(), Times.Once);
+
+                Assert.That(response.IsSuccess, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The deadline for the task with ID {taskId} was set to 01.01.0001."));
+                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Deadline, Is.Not.EqualTo(DateOnly.MaxValue));
+            });
+        }
+        #endregion
     }
 }
