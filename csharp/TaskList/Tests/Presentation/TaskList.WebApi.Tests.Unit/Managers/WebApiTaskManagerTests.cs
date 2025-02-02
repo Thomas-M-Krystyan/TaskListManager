@@ -46,7 +46,7 @@ namespace TaskList.WebApi.Tests.Unit.Managers
             const string taskName = "Task 1";
 
             WebApiTaskManager taskManager = new(_counterMock.Object);
-            
+
             _ = taskManager.AddProject(projectName);
             _ = taskManager.AddTask(projectName, taskName);
 

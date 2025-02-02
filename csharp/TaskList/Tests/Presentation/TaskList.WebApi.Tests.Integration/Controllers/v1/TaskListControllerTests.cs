@@ -44,7 +44,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
             string errorMessage = $"{nameof(WebApiTaskManager.DisplayTaskList)} failed.";
 
             Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
-            
+
             _ = taskManagerMock
                 .Setup(mock => mock.DisplayTaskList())
                 .Returns(CommandResponse.Failure(errorMessage));
