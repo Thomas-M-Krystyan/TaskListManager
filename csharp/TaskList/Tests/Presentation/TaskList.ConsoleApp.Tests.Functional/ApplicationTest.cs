@@ -50,8 +50,10 @@ namespace TaskList.ConsoleApp.Tests.Functional
         [Test, Timeout(1000)]
         public void ItWorks()
         {
+            // Display after the start
             Execute("show");
 
+            // Adding items
             Execute("add project secrets");
             Execute("add task secrets Eat more donuts.");
             Execute("add task secrets Destroy all humans.");
@@ -64,6 +66,7 @@ namespace TaskList.ConsoleApp.Tests.Functional
                 ""
             );
 
+            // Checking
             Execute("add project training");
             Execute("add task training Four Elements of Simple Design");
             Execute("add task training SOLID");
