@@ -29,15 +29,17 @@ namespace TaskList.ConsoleApp.Managers
             {
                 _stringBuilder.Clear();
 
-                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetTaskList()))
+                IReadOnlyDictionary<long, TaskItem> tasks = GetAllTasks();
+
+                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetAllProjects()))
                 {
                     // Project name
                     _stringBuilder.AppendLine(project.Value.Name);
 
-                    foreach (KeyValuePair<long, TaskItem> task in GetTasksSortedById(project.Value))
+                    foreach (long taskId in project.Value.TaskIds)
                     {
                         // Task description
-                        _stringBuilder.AppendLine(GetTaskDetails(task.Value));
+                        _stringBuilder.AppendLine(GetTaskDetails(tasks[taskId]));
                     }
 
                     _stringBuilder.AppendLine();
@@ -58,19 +60,19 @@ namespace TaskList.ConsoleApp.Managers
             {
                 _stringBuilder.Clear();
 
-                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetTaskList()))
-                {
-                    // Project name
-                    _stringBuilder.AppendLine(project.Value.Name);
+                //foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetAllProjects()))
+                //{
+                //    // Project name
+                //    _stringBuilder.AppendLine(project.Value.Name);
 
-                    foreach (KeyValuePair<long, TaskItem> task in GetTasksSortedById(project.Value))
-                    {
-                        // Task description
-                        _stringBuilder.AppendLine(GetTaskDetails(task.Value));
-                    }
+                //    foreach (KeyValuePair<long, TaskItem> task in GetTasksSortedById(project.Value))
+                //    {
+                //        // Task description
+                //        _stringBuilder.AppendLine(GetTaskDetails(task.Value));
+                //    }
 
-                    _stringBuilder.AppendLine();
-                }
+                //    _stringBuilder.AppendLine();
+                //}
 
                 return CommandResponse.Success(_stringBuilder.ToString(), true);
             }
@@ -107,11 +109,13 @@ namespace TaskList.ConsoleApp.Managers
         #region Helper methods
         // NOTE: Order of elements is not guaranteed in a ConcurrentDictionary. Even if the order of elements doesn't
         //       matter at all from the perspective of business logic, it might be important from the user perspective
-        private static KeyValuePair<string, ProjectItem>[] GetProjectsSortedById(IReadOnlyDictionary<string, ProjectItem> taskList)
-            => [.. taskList.OrderBy(project => project.Value.Id)];
+        private static KeyValuePair<string, ProjectItem>[] GetProjectsSortedById(IEnumerable<KeyValuePair<string, ProjectItem>> taskList)
+            => [.. taskList.OrderBy(project => project.Value.OrderNumber)];
 
-        private static KeyValuePair<long, TaskItem>[] GetTasksSortedById(ProjectItem project)
-            => [.. project.Tasks.OrderBy(task => task.Value.Id)];
+        private static KeyValuePair<long, TaskItem>[] GetTasksSortedById(IEnumerable<KeyValuePair<long, TaskItem>> tasks)
+        {
+            return [.. tasks.OrderBy(task => task.Value.Id)];
+        }
 
         private static string GetTaskDetails(TaskItem task)
             => string.Format("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Name);

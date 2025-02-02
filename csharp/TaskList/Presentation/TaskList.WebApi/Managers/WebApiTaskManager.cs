@@ -24,7 +24,7 @@ namespace TaskList.WebApi.Managers
             try
             {
                 return CommandResponse.Success(
-                    JsonSerializer.Serialize(GetTaskList()), true);
+                    JsonSerializer.Serialize(GetAllProjects()), true);
             }
             catch (Exception exception)
             {

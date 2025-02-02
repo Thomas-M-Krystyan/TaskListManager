@@ -3,38 +3,43 @@ using System.Text.Json.Serialization;
 
 namespace TaskList.Domain.Models
 {
-    [DebuggerDisplay("Id: {Id}, Name: {Name}, Tasks: {Tasks.Count}")]
+    [DebuggerDisplay("Name: {Name}, TaskIds: {TaskIds.Count}, OrderNumber: {OrderNumber}")]
     public readonly struct ProjectItem
     {
-        public long Id { get; }
-
+        // [Primary key]
+        /// <summary>
+        /// The ID of the project, which is also the name of the project.
+        /// </summary>
         public string Name { get; }
 
-        public Dictionary<long, TaskItem> Tasks { get; } = [];
+        // [Foreign keys]
+        /// <summary>
+        /// The IDs of the tasks associated with this project.
+        /// </summary>
+        public List<long> TaskIds { get; } = [];
+
+        /// <summary>
+        /// The order number of the project.
+        /// </summary>
+        public long OrderNumber { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItem"/> struct.
         /// </summary>
-        /// <param name="id">The unique identifier of the project.</param>
-        /// <param name="name">The name of the project.</param>
-        public ProjectItem(long id, string name)
+        public ProjectItem(string name, long orderNumber)
         {
-            this.Id = id;
             this.Name = name;
+            this.OrderNumber = orderNumber;
         }
 
         /// <summary>
         /// The constructor used by the JSON converter to deserialize projects.
         /// </summary>
-        /// <param name="id">The unique identifier of the project.</param>
-        /// <param name="name">The name of the project.</param>
-        /// <param name="tasks">The tasks associated with the project.</param>
         [JsonConstructor]
-        internal ProjectItem(long id, string name, Dictionary<long, TaskItem> tasks)
+        internal ProjectItem(string name, long orderNumber, List<long> taskIds)
+            : this(name, orderNumber)
         {
-            this.Id = id;
-            this.Name = name;
-            this.Tasks = tasks;
+            this.TaskIds = taskIds;
         }
     }
 }

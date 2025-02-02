@@ -39,22 +39,22 @@ namespace TaskList.Logic.Tests.Unit.Managers
             _counterMock.Reset();
         }
 
-        #region GetTaskList()
+        #region GetAllProjects()
         [Test]
-        public void GetTaskList_WithoutTasks_ReturnsEmptyList()
+        public void GetAllProjects_WithoutTasks_ReturnsEmptyList()
         {
             // Arrange
             TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            IReadOnlyDictionary<string, Domain.Models.ProjectItem> actualTaskList = taskManager.GetTaskList();
+            IReadOnlyDictionary<string, ProjectItem> actualCollection = taskManager.GetAllProjects();
 
             // Assert
-            Assert.That(actualTaskList, Is.Empty);
+            Assert.That(actualCollection, Is.Empty);
         }
 
         [Test]
-        public void GetTaskList_WithTasks_ReturnsFilledList()
+        public void GetAllProjects_WithTasks_ReturnsFilledList()
         {
             // Arrange
             _ = _counterMock
@@ -66,19 +66,19 @@ namespace TaskList.Logic.Tests.Unit.Managers
             _ = taskManager.AddProject(ProjectName);
 
             // Act
-            IReadOnlyDictionary<string, Domain.Models.ProjectItem> actualTaskList = taskManager.GetTaskList();
+            IReadOnlyDictionary<string, ProjectItem> actualCollection = taskManager.GetAllProjects();
 
             // Assert
             Assert.Multiple(() =>
             {
                 _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
 
-                Assert.That(actualTaskList, Has.Count.EqualTo(1));
+                Assert.That(actualCollection, Has.Count.EqualTo(1));
             });
         }
 
         [Test]
-        public void GetTaskList_IsTrulyImmutable()
+        public void GetAllProjects_IsTrulyImmutable()
         {
             // Arrange
             _ = _counterMock
@@ -94,11 +94,11 @@ namespace TaskList.Logic.Tests.Unit.Managers
             _ = taskManager.AddProject(ProjectName);
             _ = taskManager.AddTask(ProjectName, TaskName);
 
-            IReadOnlyDictionary<string, ProjectItem> taskList = taskManager.GetTaskList();
+            IReadOnlyDictionary<string, ProjectItem> taskList = taskManager.GetAllProjects();
 
-            string initialOriginalSerializedTaskList = JsonSerializer.Serialize(taskManager.GetTaskList());
+            string initialOriginalSerializedTaskList = JsonSerializer.Serialize(taskManager.GetAllProjects());
             const string expectedOriginalSerializedTaskList =
-                "{\"Work\":{\"Id\":0,\"Name\":\"Work\",\"Tasks\":{\"0\":{\"Id\":0,\"Name\":\"Task\",\"IsDone\":false,\"Deadline\":\"9999-12-31\"}}}}";
+                "{\"Work\":{\"Name\":\"Work\",\"TaskIds\":[0],\"OrderNumber\":0}}";
 
             // Assert before
             Assert.Multiple(() =>
@@ -109,27 +109,60 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 Assert.That(initialOriginalSerializedTaskList, Is.EqualTo(expectedOriginalSerializedTaskList));
             });
 
-            // Act #1 (try to add new task inside of a project)
-            taskList.First().Value.Tasks.Add(2, new TaskItem(2, "New task"));
+            // Act (try to add new task ID inside of a project)
+            taskList.First().Value.TaskIds.Add(999);
 
-            // Assert after #1
+            // Assert after
             Assert.Multiple(() =>
             {
-                string serializedTaskListAfterFirstModification = JsonSerializer.Serialize(taskManager.GetTaskList());
+                string serializedTaskListAfterFirstModification = JsonSerializer.Serialize(taskManager.GetAllProjects());
 
                 Assert.That(serializedTaskListAfterFirstModification, Is.EqualTo(expectedOriginalSerializedTaskList));
             });
+        }
+        #endregion
 
-            // Act #2 (try to modify existing task)
-            TaskItem firstTask = taskList.First().Value.Tasks.First().Value;
-            firstTask.IsDone = true;
+        #region GetAllTasks()
+        [Test]
+        public void GetAllTasks_WithoutTasks_ReturnsEmptyList()
+        {
+            // Arrange
+            TestTaskManager taskManager = new(_counterMock.Object);
 
-            // Assert after #2
+            // Act
+            IReadOnlyDictionary<long, TaskItem> actualCollection = taskManager.GetAllTasks();
+
+            // Assert
+            Assert.That(actualCollection, Is.Empty);
+        }
+
+        [Test]
+        public void GetAllTasks_WithTasks_ReturnsFilledList()
+        {
+            // Arrange
+            _ = _counterMock
+                .Setup(counter => counter.GetNextProjectId())
+                .Returns(default(long));
+
+            _ = _counterMock
+                .Setup(counter => counter.GetNextTaskId())
+                .Returns(default(long));
+
+            TestTaskManager taskManager = new(_counterMock.Object);
+
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
+
+            // Act
+            IReadOnlyDictionary<long, TaskItem> actualCollection = taskManager.GetAllTasks();
+
+            // Assert
             Assert.Multiple(() =>
             {
-                string serializedTaskListAfterSecondModification = JsonSerializer.Serialize(taskManager.GetTaskList());
+                _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
+                _counterMock.Verify(mock => mock.GetNextTaskId(), Times.Once);
 
-                Assert.That(serializedTaskListAfterSecondModification, Is.EqualTo(expectedOriginalSerializedTaskList));
+                Assert.That(actualCollection, Has.Count.EqualTo(1));
             });
         }
         #endregion
@@ -146,11 +179,11 @@ namespace TaskList.Logic.Tests.Unit.Managers
             TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            int taskListCountBefore = taskManager.GetTaskList().Count;
+            int taskListCountBefore = taskManager.GetAllProjects().Count;
 
             CommandResponse response = taskManager.AddProject(ProjectName);
 
-            int taskListCountAfter = taskManager.GetTaskList().Count;
+            int taskListCountAfter = taskManager.GetAllProjects().Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -175,12 +208,12 @@ namespace TaskList.Logic.Tests.Unit.Managers
             TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            int taskListCountBefore = taskManager.GetTaskList().Count;
+            int taskListCountBefore = taskManager.GetAllProjects().Count;
 
             CommandResponse response = taskManager.AddProject(ProjectName);
             response = taskManager.AddProject(ProjectName);
 
-            int taskListCountAfter = taskManager.GetTaskList().Count;
+            int taskListCountAfter = taskManager.GetAllProjects().Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -208,7 +241,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
             // Act
             CommandResponse response = taskManager.AddProject(ProjectName);
-            int taskListCountAfter = taskManager.GetTaskList().Count;
+            int taskListCountAfter = taskManager.GetAllProjects().Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -240,12 +273,11 @@ namespace TaskList.Logic.Tests.Unit.Managers
             _ = taskManager.AddProject(ProjectName);
 
             // Act
-            IReadOnlyDictionary<string, Domain.Models.ProjectItem> x = taskManager.GetTaskList();
-            int tasksCountBefore = taskManager.GetTaskList()[ProjectName].Tasks.Count;
+            int tasksCountBefore = taskManager.GetAllProjects()[ProjectName].TaskIds.Count;
 
             CommandResponse response = taskManager.AddTask(ProjectName, TaskName);
 
-            int tasksCountAfter = taskManager.GetTaskList()[ProjectName].Tasks.Count;
+            int tasksCountAfter = taskManager.GetAllProjects()[ProjectName].TaskIds.Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -257,7 +289,9 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 Assert.That(response.IsSuccess, Is.True);
                 Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The task with name \"{TaskName}\" was added to the project \"{ProjectName}\"."));
                 Assert.That(tasksCountAfter, Is.EqualTo(1));
-                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Name, Is.EqualTo(TaskName));
+
+                long newTaskId = taskManager.GetAllProjects()[ProjectName].TaskIds[0];
+                Assert.That(taskManager.GetAllTasks()[newTaskId].Name, Is.EqualTo(TaskName));
             });
         }
 
@@ -379,7 +413,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
             _ = taskManager.AddProject(ProjectName);
             _ = taskManager.AddTask(ProjectName, TaskName);
 
-            long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
+            long taskId = taskManager.GetAllProjects()[ProjectName].TaskIds[0];
 
             // Act
             CommandResponse response = taskManager.CheckTask(taskId, true);
@@ -392,7 +426,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
                 Assert.That(response.IsSuccess, Is.True);
                 Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The task with ID {taskId} was marked as finished."));
-                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().Value.IsDone, Is.True);
+                Assert.That(taskManager.GetAllTasks()[taskId].IsDone, Is.True);
             });
         }
 
@@ -413,7 +447,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
             _ = taskManager.AddProject(ProjectName);
             _ = taskManager.AddTask(ProjectName, TaskName);
 
-            long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
+            long taskId = taskManager.GetAllProjects()[ProjectName].TaskIds[0];
 
             _ = taskManager.CheckTask(taskId, true);
 
@@ -428,7 +462,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
                 Assert.That(response.IsSuccess, Is.True);
                 Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The task with ID {taskId} was marked as unfinished."));
-                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().Value.IsDone, Is.False);
+                Assert.That(taskManager.GetAllTasks()[taskId].IsDone, Is.False);
             });
         }
         #endregion
@@ -493,7 +527,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
             _ = taskManager.AddProject(ProjectName);
             _ = taskManager.AddTask(ProjectName, TaskName);
 
-            long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
+            long taskId = taskManager.GetAllProjects()[ProjectName].TaskIds[0];
 
             // Act
             CommandResponse response = taskManager.SetDeadline(taskId, DateOnly.MinValue);
@@ -506,7 +540,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
                 Assert.That(response.IsSuccess, Is.True);
                 Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The deadline for the task with ID {taskId} was set to 01.01.0001."));
-                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Deadline, Is.Not.EqualTo(DateOnly.MaxValue));
+                Assert.That(taskManager.GetAllTasks()[taskId].Deadline, Is.Not.EqualTo(DateOnly.MaxValue));
             });
         }
         #endregion

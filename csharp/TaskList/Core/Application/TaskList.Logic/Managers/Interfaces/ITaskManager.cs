@@ -9,13 +9,22 @@ namespace TaskList.Logic.Managers.Interfaces
     public interface ITaskManager
     {
         /// <summary>
-        /// Gets thread-safe immutable copy of the internal task list which
+        /// Gets thread-safe immutable copy of the currently saved projects which
         /// prevents direct manipulations on the application-wide data source.
         /// </summary>
         /// <returns>
-        ///   The copy of the internal task list.
+        ///   The deep-copy of a dictionary of projects.
         /// </returns>
-        public IReadOnlyDictionary<string, ProjectItem> GetTaskList();
+        public IReadOnlyDictionary<string, ProjectItem> GetAllProjects();
+
+        /// <summary>
+        /// Gets thread-safe immutable copy of the currently saved task which
+        /// prevents direct manipulations on the application-wide data source.
+        /// </summary>
+        /// <returns>
+        ///   The deep-copy of a dictionary of tasks.
+        /// </returns>
+        public IReadOnlyDictionary<long, TaskItem> GetAllTasks();
 
         /// <summary>
         /// Displays all currently stored <see cref="ProjectItem"/>s and <see cref="TaskItem"/>s.

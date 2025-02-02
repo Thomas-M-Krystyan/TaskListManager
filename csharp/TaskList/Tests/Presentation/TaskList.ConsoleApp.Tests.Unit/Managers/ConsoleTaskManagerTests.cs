@@ -28,7 +28,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
         {
             // Arrange
             const string projectName = "Project 1";
-            const string taskName1 = "Task 1";
+            const string taskName = "Task 1";
 
             _ = _counterMock
                 .Setup(mock => mock.GetNextProjectId())
@@ -41,7 +41,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             ConsoleTaskManager taskManager = new(new StringBuilderProxy(), _counterMock.Object);
 
             _ = taskManager.AddProject(projectName);
-            _ = taskManager.AddTask(projectName, taskName1);
+            _ = taskManager.AddTask(projectName, taskName);
 
             // Act
             CommandResponse result = taskManager.DisplayAllTasks();
@@ -49,7 +49,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             // Assert
             string expectedOutput =
                 $"{projectName}\r\n" +
-                $"    [ ] 0: {taskName1}\r\n" +
+                $"    [ ] 0: {taskName}\r\n" +
                 $"\r\n";
 
             Assert.Multiple(() =>

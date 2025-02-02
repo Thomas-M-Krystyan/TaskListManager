@@ -233,7 +233,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
             _ = taskManager.AddProject(ProjectName);
             _ = taskManager.AddTask(ProjectName, TaskName);
             _ = taskManager.CheckTask(
-                taskManager.GetTaskList().First().Value.Id, true);
+                taskManager.GetAllProjects().First().Value.OrderNumber, true);
 
             TaskListController controller = new(taskManager);
 

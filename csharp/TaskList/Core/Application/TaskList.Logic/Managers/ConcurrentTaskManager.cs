@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using TaskList.Domain.Models;
 using TaskList.Logic.Helpers.Interfaces;
@@ -11,8 +12,10 @@ namespace TaskList.Logic.Managers
     /// <remarks>The application generic implementation.</remarks>
     public abstract class ConcurrentTaskManager : ITaskManager
     {
-        private readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
-        private readonly ConcurrentDictionary<long, string> _primaryKeysMap = [];
+        private static readonly object transactionPadlock = new();
+
+        private readonly Dictionary<string, ProjectItem> _projects = [];
+        private readonly Dictionary<long, TaskItem> _tasks = [];
 
         private readonly ICounterRegister _counter;
 
@@ -24,17 +27,23 @@ namespace TaskList.Logic.Managers
             _counter = counter;
         }
 
-        /// <inheritdoc cref="ITaskManager.GetTaskList()"/>
-        public IReadOnlyDictionary<string, ProjectItem> GetTaskList()
+        // NOTE: It might look silly, but it's a shorter solution to make a deep-copy of the collection
+        //       which results in a thread-safe and "truly" immutable (the collection itself and it's
+        //       elements) snapshot of the actual task list. This approach would protect the internal
+        //       data source from direct manipulations from outside and ensure the data consistency
+        
+        /// <inheritdoc cref="ITaskManager.GetAllProjects()"/>
+        public IReadOnlyDictionary<string, ProjectItem> GetAllProjects()
         {
-            // NOTE: It might look silly, but it's a shorter solution to make a deep-copy of the collection
-            //       which results in a thread-safe and "truly" immutable (the collection itself and it's
-            //       elements) snapshot of the actual task list. This approach would protect the internal
-            //       data source from direct manipulations from outside and ensure the data consistency
-            string serializedTaskList = JsonSerializer.Serialize(_taskList);
+            return JsonSerializer.Deserialize<Dictionary<string, ProjectItem>>(
+                JsonSerializer.Serialize(_projects)) ?? [];
+        }
 
-            return JsonSerializer.Deserialize<Dictionary<string, ProjectItem>>(serializedTaskList)
-                ?? [];
+        /// <inheritdoc cref="ITaskManager.GetAllTasks()"/>
+        public IReadOnlyDictionary<long, TaskItem> GetAllTasks()
+        {
+            return JsonSerializer.Deserialize<Dictionary<long, TaskItem>>(
+                JsonSerializer.Serialize(_tasks)) ?? [];
         }
 
         /// <inheritdoc cref="ITaskManager.DisplayAllTasks()"/>
@@ -46,107 +55,116 @@ namespace TaskList.Logic.Managers
         /// <inheritdoc cref="ITaskManager.AddProject(string)"/>
         public CommandResponse AddProject(string projectName)
         {
-            try
+            lock (transactionPadlock)
             {
-                // Add a new project to the task list
-                bool isSuccess = _taskList.TryAdd(projectName, new ProjectItem(_counter.GetNextProjectId(), projectName));
+                try
+                {
+                    // Add a new project
+                    bool isSuccess = _projects.TryAdd(projectName,
+                        new ProjectItem(projectName, _counter.GetNextProjectId()));
 
-                return isSuccess
-                    ? CommandResponse.Success(content: string.Format("The project with name \"{0}\" was created", projectName))
-                    : CommandResponse.Failure("Project with the same name already exists");
-            }
-            catch (Exception exception)
-            {
-                return CommandResponse.Failure(exception);
+                    return isSuccess
+                        ? CommandResponse.Success(content: string.Format("The project with name \"{0}\" was created", projectName))
+                        : CommandResponse.Failure("Project with the same name already exists");
+                }
+                catch (Exception exception)
+                {
+                    return CommandResponse.Failure(exception);
+                }
             }
         }
 
         /// <inheritdoc cref="ITaskManager.AddTask(string, string)"/>
         public CommandResponse AddTask(string projectName, string taskName)
         {
-            try
+            lock (transactionPadlock)
             {
-                if (_taskList.TryGetValue(projectName, out ProjectItem project))
+                try
                 {
-                    // Create new task and add it to the project
-                    long newTaskId = _counter.GetNextTaskId();
-                    project.Tasks[newTaskId] = new TaskItem(newTaskId, taskName);
+                    if (_projects.TryGetValue(projectName, out ProjectItem project))
+                    {
+                        long newTaskId = _counter.GetNextTaskId();
 
-                    // Create mapping between Task ID (PK) and Project Name (PK)
-                    _primaryKeysMap[newTaskId] = projectName;
+                        // Add a new task
+                        _tasks[newTaskId]  = new TaskItem(newTaskId, project.Name, taskName);
 
-                    return CommandResponse.Success(content: string.Format("The task with name \"{0}\" was added to the project \"{1}\"", taskName, projectName));
+                        // Create mapping between Project [PK] and Task [PK]
+                        _projects[project.Name].TaskIds.Add(newTaskId);
+
+                        return CommandResponse.Success(content: string.Format("The task with name \"{0}\" was added to the project \"{1}\"", taskName, projectName));
+                    }
+                    else
+                    {
+                        return CommandResponse.Failure(string.Format("Could not find a project with the name \"{0}\"", projectName));
+                    }
                 }
-                else
+                catch (Exception exception)
                 {
-                    return CommandResponse.Failure(string.Format("Could not find a project with the name \"{0}\"", projectName));
+                    return CommandResponse.Failure(exception);
                 }
-            }
-            catch (Exception exception)
-            {
-                return CommandResponse.Failure(exception);
             }
         }
 
         /// <inheritdoc cref="ITaskManager.CheckTask(long, bool)"/>
         public CommandResponse CheckTask(long taskId, bool isDone)
         {
-            try
+            lock (transactionPadlock)
             {
-                // Determine the name of the related project
-                if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
+                try
                 {
-                    // Find the task by ID
-                    TaskItem existingTask = _taskList[relatedProjectName].Tasks[taskId];
+                    // Determine the name of the related project
+                    if (_tasks.TryGetValue(taskId, out TaskItem task))
+                    {
+                        // Find the task by ID
+                        TaskItem existingTask = _tasks[taskId];
 
-                    // Update the task status
-                    existingTask.IsDone = isDone;
-                    UpdateTask(relatedProjectName, existingTask);
+                        // Change task status
+                        existingTask.IsDone = isDone;
 
-                    return CommandResponse.Success(content: string.Format("The task with ID {0} was marked as {1}", taskId, isDone ? "finished" : "unfinished"));
+                        // Update the task
+                        _tasks[taskId] = existingTask;
+
+                        return CommandResponse.Success(content: string.Format("The task with ID {0} was marked as {1}", taskId, isDone ? "finished" : "unfinished"));
+                    }
+
+                    return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
                 }
-
-                return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
-            }
-            catch (Exception exception)
-            {
-                return CommandResponse.Failure(exception);
+                catch (Exception exception)
+                {
+                    return CommandResponse.Failure(exception);
+                }
             }
         }
 
         /// <inheritdoc cref="ITaskManager.SetDeadline(long, DateOnly)"/>
         public CommandResponse SetDeadline(long taskId, DateOnly deadline)
         {
-            try
+            lock (transactionPadlock)
             {
-                // Determine the name of the related project
-                if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
+                try
                 {
-                    // Find the task by ID
-                    TaskItem existingTask = _taskList[relatedProjectName].Tasks[taskId];
+                    // Determine the name of the related project
+                    if (_tasks.TryGetValue(taskId, out TaskItem task))
+                    {
+                        // Find the task by ID
+                        TaskItem existingTask = _tasks[taskId];
 
-                    // Update the task status
-                    existingTask.Deadline = deadline;
-                    UpdateTask(relatedProjectName, existingTask);
+                        // Change task status
+                        existingTask.Deadline = deadline;
 
-                    return CommandResponse.Success(content: string.Format("The deadline for the task with ID {0} was set to {1}", taskId, deadline));
+                        // Update the task
+                        _tasks[taskId] = existingTask;
+
+                        return CommandResponse.Success(content: string.Format("The deadline for the task with ID {0} was set to {1}", taskId, deadline));
+                    }
+
+                    return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
                 }
-
-                return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
-            }
-            catch (Exception exception)
-            {
-                return CommandResponse.Failure(exception);
+                catch (Exception exception)
+                {
+                    return CommandResponse.Failure(exception);
+                }
             }
         }
-
-        #region Helper methods
-        private void UpdateTask(string projectName, TaskItem task)
-        {
-            // The collection item is struct. Modifying it "by reference" is not possible
-            _ = _taskList[projectName].Tasks.Remove(task.Id);
-            _ = _taskList[projectName].Tasks[task.Id] = task;
-        }
-        #endregion
     }
 }
