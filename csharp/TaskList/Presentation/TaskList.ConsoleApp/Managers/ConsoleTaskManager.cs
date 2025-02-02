@@ -107,11 +107,11 @@ namespace TaskList.ConsoleApp.Managers
         #region Helper methods
         // NOTE: Order of elements is not guaranteed in a ConcurrentDictionary. Even if the order of elements doesn't
         //       matter at all from the perspective of business logic, it might be important from the user perspective
-        private static IOrderedEnumerable<KeyValuePair<string, ProjectItem>> GetProjectsSortedById(IReadOnlyDictionary<string, ProjectItem> taskList)
-            => taskList.OrderBy(project => project.Value.Id);
+        private static KeyValuePair<string, ProjectItem>[] GetProjectsSortedById(IReadOnlyDictionary<string, ProjectItem> taskList)
+            => [.. taskList.OrderBy(project => project.Value.Id)];
 
-        private static IEnumerable<KeyValuePair<long, TaskItem>> GetTasksSortedById(ProjectItem project)
-            => project.Tasks.OrderBy(task => task.Value.Id);
+        private static KeyValuePair<long, TaskItem>[] GetTasksSortedById(ProjectItem project)
+            => [.. project.Tasks.OrderBy(task => task.Value.Id)];
 
         private static string GetTaskDetails(TaskItem task)
             => string.Format("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Name);
