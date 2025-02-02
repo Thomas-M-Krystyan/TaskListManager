@@ -33,6 +33,9 @@ namespace TaskList.WebApi.Controllers.v1
         /// <summary>
         /// Displays the list of projects and tasks.
         /// </summary>
+        /// <remarks>
+        ///   URL: api/v1/tasklist/tasks
+        /// </remarks>
         /// <returns>
         ///   The status of the operation represented by HTTP Status Code and the message.
         /// </returns>
@@ -51,6 +54,9 @@ namespace TaskList.WebApi.Controllers.v1
         /// Adds a new project.
         /// </summary>
         /// <param name="projectName">The name of the project.</param>
+        /// <remarks>
+        ///   URL: api/v1/tasklist/projects?projectName=Work
+        /// </remarks>
         /// <returns>
         ///   The status of the operation represented by HTTP Status Code and the message.
         /// </returns>
@@ -71,6 +77,9 @@ namespace TaskList.WebApi.Controllers.v1
         /// </summary>
         /// <param name="projectName">The name of the project.</param>
         /// <param name="taskName">The name of the task.</param>
+        /// <remarks>
+        ///   URL: api/v1/tasklist/projects/Work/tasks?taskName=Meeting
+        /// </remarks>
         /// <returns>
         ///   The status of the operation represented by HTTP Status Code and the message.
         /// </returns>
@@ -92,14 +101,17 @@ namespace TaskList.WebApi.Controllers.v1
         /// </summary>
         /// <param name="taskId">The unique identifier of the task.</param>
         /// <param name="isDone">The status of the task (finished or unfinished).</param>
+        /// <remarks>
+        ///   URL: api/v1/tasklist/tasks/1/status?isDone=true
+        /// </remarks>
         /// <returns>
         ///   The status of the operation represented by HTTP Status Code and the message.
         /// </returns>
         [HttpPut]
-        [Route("tasks/{taskId}/check/{isDone}")]
+        [Route("tasks/{taskId}/status")]
         public async Task<IActionResult> CheckTaskAsync(
             [Required, FromRoute] long taskId,
-            [Required, FromRoute] bool isDone)
+            [Required, FromQuery] bool isDone)
         {
             CommandResponse response = await Task.Run(() => _taskManager.CheckTask(taskId, isDone));
 
