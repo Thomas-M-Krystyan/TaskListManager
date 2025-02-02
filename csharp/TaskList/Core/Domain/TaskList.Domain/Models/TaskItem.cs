@@ -3,12 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace TaskList.Domain.Models
 {
-    [DebuggerDisplay("Id: {Id}, Description: {Description}, IsDone: {IsDone}")]
+    [DebuggerDisplay("Id: {Id}, Name: {Name}, IsDone: {IsDone}")]
     public struct TaskItem
     {
         public long Id { get; }
 
-        public string Description { get; }
+        public string Name { get; }
 
         public bool IsDone { get; set; } = false;
 
@@ -16,21 +16,24 @@ namespace TaskList.Domain.Models
         /// Initializes a new instance of the <see cref="TaskItem"/> struct.
         /// </summary>
         /// <param name="id">The unique identifier of the task.</param>
-        /// <param name="description">The description of the task.</param>
-        public TaskItem(long id, string description)
+        /// <param name="name">The name of the task.</param>
+        public TaskItem(long id, string name)
         {
             this.Id = id;
-            this.Description = description;
+            this.Name = name;
         }
 
         /// <summary>
         /// The constructor used by the JSON converter to deserialize tasks.
         /// </summary>
+        /// <param name="id">The unique identifier of the task.</param>
+        /// <param name="name">The name of the task.</param>
+        /// <param name="isDone">The status of the task.</param>
         [JsonConstructor]
-        internal TaskItem(long id, string description, bool isDone)
+        internal TaskItem(long id, string name, bool isDone)
         {
             this.Id = id;
-            this.Description = description;
+            this.Name = name;
             this.IsDone = isDone;
         }
     }

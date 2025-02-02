@@ -66,7 +66,7 @@ namespace TaskList.WebApi.Tests.Unit.Managers
                     "\"Name\":\"Project 1\"," +
                     "\"Tasks\":{" +
                       "\"0\":{" +
-                        "\"Id\":0,\"Description\":\"Task 1\",\"IsDone\":false" +
+                        "\"Id\":0,\"Name\":\"Task 1\",\"IsDone\":false" +
                       "}" +
                     "}" +
                   "}" +

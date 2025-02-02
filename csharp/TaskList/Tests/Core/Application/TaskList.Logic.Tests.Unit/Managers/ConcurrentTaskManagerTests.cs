@@ -92,7 +92,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
             string initialOriginalSerializedTaskList = JsonSerializer.Serialize(taskManager.GetTaskList());
             const string expectedOriginalSerializedTaskList =
-                "{\"Work\":{\"Id\":0,\"Name\":\"Work\",\"Tasks\":{\"0\":{\"Id\":0,\"Description\":\"Task\",\"IsDone\":false}}}}";
+                "{\"Work\":{\"Id\":0,\"Name\":\"Work\",\"Tasks\":{\"0\":{\"Id\":0,\"Name\":\"Task\",\"IsDone\":false}}}}";
 
             // Assert before
             Assert.Multiple(() =>
@@ -251,7 +251,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 Assert.That(response.IsSuccess, Is.True);
                 Assert.That(response.Content, Is.EqualTo($"Operation succeeded: The task with name \"{TaskName}\" was added to the project \"{ProjectName}\"."));
                 Assert.That(tasksCountAfter, Is.EqualTo(1));
-                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Description, Is.EqualTo(TaskName));
+                Assert.That(taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Name, Is.EqualTo(TaskName));
             });
         }
 
