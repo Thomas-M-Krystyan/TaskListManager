@@ -29,7 +29,7 @@ namespace TaskList.Logic.Managers
         //       which results in a thread-safe and "truly" immutable (the collection itself and it's
         //       elements) snapshot of the actual task list. This approach would protect the internal
         //       data source from direct manipulations from outside and ensure the data consistency
-        
+
         /// <inheritdoc cref="ITaskManager.GetAllProjects()"/>
         public IReadOnlyDictionary<string, ProjectItem> GetAllProjects()
         {
@@ -93,7 +93,7 @@ namespace TaskList.Logic.Managers
                         long newTaskId = _counter.GetNextTaskId();
 
                         // Add a new task
-                        _tasks[newTaskId]  = new TaskItem(newTaskId, project.Name, taskName);
+                        _tasks[newTaskId] = new TaskItem(newTaskId, project.Name, taskName);
 
                         // Create mapping between Project [PK] and Task [PK]
                         _projects[project.Name].TaskIds.Add(newTaskId);
