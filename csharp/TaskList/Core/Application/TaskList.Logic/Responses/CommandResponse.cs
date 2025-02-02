@@ -15,7 +15,7 @@ namespace TaskList.Logic.Responses
         /// <summary>
         /// Indicates whether the operation was unsuccessful.
         /// </summary>
-        public bool IsFailure => !IsSuccess;
+        public bool IsFailure => !this.IsSuccess;
 
         /// <summary>
         /// The overrideContent of the response.
@@ -31,8 +31,8 @@ namespace TaskList.Logic.Responses
         /// </summary>
         private CommandResponse(bool isSuccess, string content)
         {
-            IsSuccess = isSuccess;
-            Content = content;
+            this.IsSuccess = isSuccess;
+            this.Content = content;
         }
 
         /// <summary>

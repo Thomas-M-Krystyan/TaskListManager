@@ -50,13 +50,13 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void GetTaskList_WithTasks_ReturnsFilledList()
         {
             // Arrange
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
             TestTaskManager taskManager = new(_counterMock.Object);
 
-            taskManager.AddProject(ProjectName);
+            _ = taskManager.AddProject(ProjectName);
 
             // Act
             IReadOnlyDictionary<string, Domain.Models.ProjectItem> actualTaskList = taskManager.GetTaskList();
@@ -76,7 +76,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void AddProject_Project_UniqueName_ReturnsSuccess()
         {
             // Arrange
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
@@ -105,7 +105,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void AddProject_Project_DuplicatedName_ReturnsFailure()
         {
             // Arrange
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
@@ -137,7 +137,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
             // Arrange
             const string exceptionMessage = "Expected test exception.";
 
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Throws(new Exception(exceptionMessage));
 
@@ -164,17 +164,17 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void AddTask_Project_Existing_ReturnsSuccess()
         {
             // Arrange
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
             TestTaskManager taskManager = new(_counterMock.Object);
 
-            taskManager.AddProject(ProjectName);
+            _ = taskManager.AddProject(ProjectName);
 
             // Act
             IReadOnlyDictionary<string, Domain.Models.ProjectItem> x = taskManager.GetTaskList();
@@ -204,7 +204,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
             // Arrange
             const string hobbyProject = "Hobby";
 
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
@@ -229,17 +229,17 @@ namespace TaskList.Logic.Tests.Unit.Managers
             // Arrange
             const string exceptionMessage = "Expected test exception.";
 
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextTaskId())
                 .Throws(new Exception(exceptionMessage));
 
             TestTaskManager taskManager = new(_counterMock.Object);
 
-            taskManager.AddProject(ProjectName);
+            _ = taskManager.AddProject(ProjectName);
 
             // Act
             CommandResponse response = taskManager.AddTask(ProjectName, TaskName);
@@ -280,18 +280,18 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void CheckTask_MarkAsDone_Task_Unfinished_ReturnsSuccess()
         {
             // Arrange
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
             TestTaskManager taskManager = new(_counterMock.Object);
 
-            taskManager.AddProject(ProjectName);
-            taskManager.AddTask(ProjectName, TaskName);
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
 
             long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
 
@@ -314,22 +314,22 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void CheckTask_MarkAsUndone_Task_Finished_ReturnsSuccess()
         {
             // Arrange
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
-            _counterMock
+            _ = _counterMock
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
             TestTaskManager taskManager = new(_counterMock.Object);
 
-            taskManager.AddProject(ProjectName);
-            taskManager.AddTask(ProjectName, TaskName);
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
 
             long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
 
-            taskManager.CheckTask(taskId, true);
+            _ = taskManager.CheckTask(taskId, true);
 
             // Act
             CommandResponse response = taskManager.CheckTask(taskId, false);

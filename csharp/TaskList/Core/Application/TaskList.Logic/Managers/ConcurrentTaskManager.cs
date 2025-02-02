@@ -98,16 +98,6 @@ namespace TaskList.Logic.Managers
         {
             try
             {
-                //var existing = _taskList
-                //        .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == taskId))
-                //        .Where(task => task != null)
-                //        .FirstOrDefault();
-
-                //if (existing == null)
-                //{
-                //    return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
-                //}
-
                 // Determine the name of the related project
                 if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
                 {
@@ -116,8 +106,8 @@ namespace TaskList.Logic.Managers
                     existing.IsDone = isDone;
 
                     // The collection item is struct. Modifying it "by reference" is not possible
-                    _taskList[relatedProjectName].Tasks.Remove(taskId);
-                    _taskList[relatedProjectName].Tasks[existing.Id] = existing;
+                    _ = _taskList[relatedProjectName].Tasks.Remove(taskId);
+                    _ = _taskList[relatedProjectName].Tasks[existing.Id] = existing;
 
                     return CommandResponse.Success(content: string.Format("The task with ID {0} was marked as {1}", taskId, isDone ? "finished" : "unfinished"));
                 }
