@@ -37,10 +37,10 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void GetTaskList_WithoutTasks_ReturnsEmptyList()
         {
             // Arrange
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            var actualTaskList = taskManager.GetTaskList();
+            IReadOnlyDictionary<string, Domain.Models.ProjectItem> actualTaskList = taskManager.GetTaskList();
 
             // Assert
             Assert.That(actualTaskList, Is.Empty);
@@ -54,12 +54,12 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             taskManager.AddProject(ProjectName);
 
             // Act
-            var actualTaskList = taskManager.GetTaskList();
+            IReadOnlyDictionary<string, Domain.Models.ProjectItem> actualTaskList = taskManager.GetTaskList();
 
             // Assert
             Assert.Multiple(() =>
@@ -80,14 +80,14 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            var taskListCountBefore = taskManager.GetTaskList().Count;
+            int taskListCountBefore = taskManager.GetTaskList().Count;
 
-            var response = taskManager.AddProject(ProjectName);
+            CommandResponse response = taskManager.AddProject(ProjectName);
 
-            var taskListCountAfter = taskManager.GetTaskList().Count;
+            int taskListCountAfter = taskManager.GetTaskList().Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -109,15 +109,15 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextProjectId())
                 .Returns(default(long));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            var taskListCountBefore = taskManager.GetTaskList().Count;
+            int taskListCountBefore = taskManager.GetTaskList().Count;
 
-            var response = taskManager.AddProject(ProjectName);
+            CommandResponse response = taskManager.AddProject(ProjectName);
             response = taskManager.AddProject(ProjectName);
 
-            var taskListCountAfter = taskManager.GetTaskList().Count;
+            int taskListCountAfter = taskManager.GetTaskList().Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -141,11 +141,11 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextProjectId())
                 .Throws(new Exception(exceptionMessage));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            var response = taskManager.AddProject(ProjectName);
-            var taskListCountAfter = taskManager.GetTaskList().Count;
+            CommandResponse response = taskManager.AddProject(ProjectName);
+            int taskListCountAfter = taskManager.GetTaskList().Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -172,17 +172,17 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             taskManager.AddProject(ProjectName);
 
             // Act
-            var x = taskManager.GetTaskList();
-            var tasksCountBefore = taskManager.GetTaskList()[ProjectName].Tasks.Count;
+            IReadOnlyDictionary<string, Domain.Models.ProjectItem> x = taskManager.GetTaskList();
+            int tasksCountBefore = taskManager.GetTaskList()[ProjectName].Tasks.Count;
 
-            var response = taskManager.AddTask(ProjectName, TaskName);
+            CommandResponse response = taskManager.AddTask(ProjectName, TaskName);
 
-            var tasksCountAfter = taskManager.GetTaskList()[ProjectName].Tasks.Count;
+            int tasksCountAfter = taskManager.GetTaskList()[ProjectName].Tasks.Count;
 
             // Assert
             Assert.Multiple(() =>
@@ -208,10 +208,10 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            var response = taskManager.AddTask(hobbyProject, TaskName);  // Project was not added before
+            CommandResponse response = taskManager.AddTask(hobbyProject, TaskName);  // Project was not added before
 
             // Assert
             Assert.Multiple(() =>
@@ -237,12 +237,12 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextTaskId())
                 .Throws(new Exception(exceptionMessage));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             taskManager.AddProject(ProjectName);
 
             // Act
-            var response = taskManager.AddTask(ProjectName, TaskName);
+            CommandResponse response = taskManager.AddTask(ProjectName, TaskName);
 
             // Assert
             Assert.Multiple(() =>
@@ -263,10 +263,10 @@ namespace TaskList.Logic.Tests.Unit.Managers
             // Arrange
             const long taskId = 1;
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            var response = taskManager.CheckTask(taskId, true);
+            CommandResponse response = taskManager.CheckTask(taskId, true);
 
             // Assert
             Assert.Multiple(() =>
@@ -288,15 +288,15 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             taskManager.AddProject(ProjectName);
             taskManager.AddTask(ProjectName, TaskName);
 
-            var taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
+            long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
 
             // Act
-            var response = taskManager.CheckTask(taskId, true);
+            CommandResponse response = taskManager.CheckTask(taskId, true);
 
             // Assert
             Assert.Multiple(() =>
@@ -322,17 +322,17 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 .Setup(counter => counter.GetNextTaskId())
                 .Returns(default(long));
 
-            var taskManager = new TestTaskManager(_counterMock.Object);
+            TestTaskManager taskManager = new(_counterMock.Object);
 
             taskManager.AddProject(ProjectName);
             taskManager.AddTask(ProjectName, TaskName);
 
-            var taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
+            long taskId = taskManager.GetTaskList()[ProjectName].Tasks.First().Value.Id;
 
             taskManager.CheckTask(taskId, true);
 
             // Act
-            var response = taskManager.CheckTask(taskId, false);
+            CommandResponse response = taskManager.CheckTask(taskId, false);
 
             // Assert
             Assert.Multiple(() =>

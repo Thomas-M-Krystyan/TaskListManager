@@ -6,8 +6,8 @@ using TaskList.ConsoleApp.IO;
 using TaskList.ConsoleApp.IO.Interfaces;
 using TaskList.ConsoleApp.Managers;
 using TaskList.ConsoleApp.Managers.Interfaces;
-using TaskList.Logic.Helpers.Interfaces;
 using TaskList.Logic.Helpers;
+using TaskList.Logic.Helpers.Interfaces;
 
 namespace TaskList.ConsoleApp
 {

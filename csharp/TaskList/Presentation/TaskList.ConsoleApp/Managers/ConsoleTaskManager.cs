@@ -36,7 +36,7 @@ namespace TaskList.ConsoleApp.Managers
                     // Project name
                     _stringBuilder.AppendLine(project.Value.Name);
 
-                    foreach (var task in project.Value.Tasks.OrderBy(task => task.Value.Id))
+                    foreach (KeyValuePair<long, TaskItem> task in project.Value.Tasks.OrderBy(task => task.Value.Id))
                     {
                         // Task description
                         _stringBuilder.AppendLine(string.Format("    [{0}] {1}: {2}", task.Value.IsDone ? 'x' : ' ', task.Value.Id, task.Value.Description));
