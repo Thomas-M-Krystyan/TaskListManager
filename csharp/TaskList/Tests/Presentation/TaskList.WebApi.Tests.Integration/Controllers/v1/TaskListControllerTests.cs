@@ -38,7 +38,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
 
         [Test]
-        public async Task DisplayTaskListAsync_RaingPath_IntegrationTest()
+        public async Task DisplayTaskListAsync_RainyPath_IntegrationTest()
         {
             // Arrange
             const string errorMessage = "DisplayTaskList failed.";
