@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TaskList.WebApi.Managers.Interfaces;
 
 namespace TaskList.WebApi.Controllers.v1
 {
@@ -16,11 +17,15 @@ namespace TaskList.WebApi.Controllers.v1
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
     public sealed class TaskListController : ControllerBase
     {
+        private readonly IWebApiTaskManager _taskManager;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskListController"/> class.
         /// </summary>
-        public TaskListController()
+        /// <param name="taskManager">The task manager service.</param>
+        public TaskListController(IWebApiTaskManager taskManager)
         {
+            _taskManager = taskManager;
         }
     }
 }
