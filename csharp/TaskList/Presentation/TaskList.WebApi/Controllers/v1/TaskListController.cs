@@ -33,6 +33,9 @@ namespace TaskList.WebApi.Controllers.v1
         /// <summary>
         /// Displays the list of projects and tasks.
         /// </summary>
+        /// <returns>
+        ///   The status of the operation represented by HTTP Status Code and the message.
+        /// </returns>
         [HttpGet]
         [Route("tasks")]
         public async Task<IActionResult> DisplayTaskListAsync()
@@ -47,7 +50,10 @@ namespace TaskList.WebApi.Controllers.v1
         /// <summary>
         /// Adds a new project.
         /// </summary>
-        /// <param name="projectName">Name of the project.</param>
+        /// <param name="projectName">The name of the project.</param>
+        /// <returns>
+        ///   The status of the operation represented by HTTP Status Code and the message.
+        /// </returns>
         [HttpPost]
         [Route("projects")]
         public async Task<IActionResult> AddProjectAsync(
@@ -63,8 +69,11 @@ namespace TaskList.WebApi.Controllers.v1
         /// <summary>
         /// Adds a new task to the project.
         /// </summary>
-        /// <param name="projectName">Name of the project.</param>
-        /// <param name="taskName">Name of the task.</param>
+        /// <param name="projectName">The name of the project.</param>
+        /// <param name="taskName">The name of the task.</param>
+        /// <returns>
+        ///   The status of the operation represented by HTTP Status Code and the message.
+        /// </returns>
         [HttpPost]
         [Route("projects/{projectName}/tasks")]
         public async Task<IActionResult> AddTaskAsync(
@@ -72,6 +81,27 @@ namespace TaskList.WebApi.Controllers.v1
             [Required, FromQuery] string taskName)
         {
             CommandResponse response = await Task.Run(() => _taskManager.AddTask(projectName, taskName));
+
+            return response.IsSuccess
+                ? Ok(response.Content)
+                : BadRequest(response.Content);
+        }
+
+        /// <summary>
+        /// Sets the task as finished or unfinished.
+        /// </summary>
+        /// <param name="taskId">The unique identifier of the task.</param>
+        /// <param name="isDone">The status of the task (finished or unfinished).</param>
+        /// <returns>
+        ///   The status of the operation represented by HTTP Status Code and the message.
+        /// </returns>
+        [HttpPut]
+        [Route("tasks/{taskId}/check/{isDone}")]
+        public async Task<IActionResult> CheckTaskAsync(
+            [Required, FromRoute] long taskId,
+            [Required, FromRoute] bool isDone)
+        {
+            CommandResponse response = await Task.Run(() => _taskManager.CheckTask(taskId, isDone));
 
             return response.IsSuccess
                 ? Ok(response.Content)
