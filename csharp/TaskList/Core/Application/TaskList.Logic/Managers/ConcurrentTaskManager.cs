@@ -67,7 +67,7 @@ namespace TaskList.Logic.Managers
                     //project.Tasks.Add(new TaskItem(_counter.GetNextTaskId(), taskName));
                     long newTaskId = _counter.GetNextTaskId();
 
-                    // IDs is unique and project is existing, so these operations are safe
+                    // IDs is unique and project is existingTask, so these operations are safe
                     project.Tasks[newTaskId] = new TaskItem(newTaskId, taskName);
                     _primaryKeysMap[newTaskId] = projectName;  // Task ID => Project Name
 
@@ -92,13 +92,11 @@ namespace TaskList.Logic.Managers
                 // Determine the name of the related project
                 if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
                 {
-                    TaskItem existing = _taskList[relatedProjectName].Tasks[taskId];
+                    TaskItem existingTask = _taskList[relatedProjectName].Tasks[taskId];
 
-                    existing.IsDone = isDone;
+                    existingTask.IsDone = isDone;
 
-                    // The collection item is struct. Modifying it "by reference" is not possible
-                    _ = _taskList[relatedProjectName].Tasks.Remove(taskId);
-                    _ = _taskList[relatedProjectName].Tasks[existing.Id] = existing;
+                    UpdateTask(relatedProjectName, existingTask);
 
                     return CommandResponse.Success(content: string.Format("The task with ID {0} was marked as {1}", taskId, isDone ? "finished" : "unfinished"));
                 }
@@ -119,13 +117,11 @@ namespace TaskList.Logic.Managers
                 // Determine the name of the related project
                 if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
                 {
-                    TaskItem existing = _taskList[relatedProjectName].Tasks[taskId];
+                    TaskItem existingTask = _taskList[relatedProjectName].Tasks[taskId];
 
-                    existing.Deadline = deadline;
+                    existingTask.Deadline = deadline;
 
-                    // The collection item is struct. Modifying it "by reference" is not possible
-                    _ = _taskList[relatedProjectName].Tasks.Remove(taskId);
-                    _ = _taskList[relatedProjectName].Tasks[existing.Id] = existing;
+                    UpdateTask(relatedProjectName, existingTask);
 
                     return CommandResponse.Success(content: string.Format("The deadline for the task with ID {0} was set to {1}", taskId, deadline));
                 }
@@ -137,5 +133,14 @@ namespace TaskList.Logic.Managers
                 return CommandResponse.Failure(exception);
             }
         }
+
+        #region Helper methods
+        private void UpdateTask(string projectName, TaskItem task)
+        {
+            // The collection item is struct. Modifying it "by reference" is not possible
+            _ = _taskList[projectName].Tasks.Remove(task.Id);
+            _ = _taskList[projectName].Tasks[task.Id] = task;
+        }
+        #endregion
     }
 }
