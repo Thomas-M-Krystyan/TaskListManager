@@ -20,6 +20,8 @@ namespace TaskList.WebApi
         private static WebApplicationBuilder RegisterApiServices(this WebApplicationBuilder builder)
         {
             // Singletons
+            builder.Services.TryAddSingleton<ICounterRegister, CounterRegister>();
+            builder.Services.TryAddSingleton<IWebApiTaskManager, WebApiTaskManager>();
 
             return builder;
         }
