@@ -24,6 +24,7 @@ namespace TaskList.Logic.Managers
             _counter = counter;
         }
 
+        /// <inheritdoc cref="ITaskManager.GetTaskList()"/>
         public IReadOnlyDictionary<string, ProjectItem> GetTaskList()
         {
             // NOTE: It might look silly, but it's a shorter solution to make a deep-copy of the collection
