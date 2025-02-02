@@ -104,7 +104,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
             });
 
             // Act #1 (try to add new task inside of a project)
-            taskList.First().Value.Tasks.Add(2, new TaskItem() { Id = 2, Description = "New task", IsDone = true });
+            taskList.First().Value.Tasks.Add(2, new TaskItem(2, "New task"));
 
             // Assert after #1
             Assert.Multiple(() =>

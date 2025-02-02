@@ -68,12 +68,7 @@ namespace TaskList.Logic.Managers
                     long newTaskId = _counter.GetNextTaskId();
 
                     // IDs is unique and project is existing, so these operations are safe
-                    project.Tasks[newTaskId] = new TaskItem
-                    {
-                        Id = newTaskId,
-                        Description = taskName,
-                        IsDone = false
-                    };
+                    project.Tasks[newTaskId] = new TaskItem(newTaskId, taskName);
                     _primaryKeysMap[newTaskId] = projectName;  // Task ID => Project Name
 
                     return CommandResponse.Success(content: string.Format("The task with name \"{0}\" was added to the project \"{1}\"", taskName, projectName));
