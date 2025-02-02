@@ -96,7 +96,24 @@ namespace TaskList.ConsoleApp.Tests.Functional
                 ""
             );
 
-            // TODO: Test new display
+            // Unchecking
+            Execute("uncheck 1");
+
+            Execute("show");
+            ReadLines(
+                "secrets",
+                "    [ ] 1: Eat more donuts.",
+                "    [ ] 2: Destroy all humans.",
+                "",
+                "training",
+                "    [x] 3: Four Elements of Simple Design",
+                "    [ ] 4: SOLID",
+                "    [x] 5: Coupling and Cohesion",
+                "    [x] 6: Primitive Obsession",
+                "    [ ] 7: Outside-In TDD",
+                "    [ ] 8: Interaction-Driven Design",
+                ""
+            );
 
             Execute("quit");
         }
