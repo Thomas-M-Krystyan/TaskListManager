@@ -5,9 +5,20 @@ namespace TaskList.Logic.Helpers
     /// <inheritdoc cref="ICounterRegister"/>
     public sealed class CounterRegister : ICounterRegister
     {
+        private static readonly object _projectPadlock = new();
         private static readonly object _taskPadlock = new();
 
+        private static long _lastProjectId = 0;
         private static long _lastTaskId = 0;
+
+        /// <inheritdoc cref="ICounterRegister.GetNextProjectId()"/>
+        public long GetNextProjectId()
+        {
+            lock (_projectPadlock)
+            {
+                return ++_lastProjectId;
+            }
+        }
 
         /// <inheritdoc cref="ICounterRegister.GetNextTaskId()"/>
         public long GetNextTaskId()
@@ -23,6 +34,11 @@ namespace TaskList.Logic.Helpers
         /// </summary>
         public static void Reset()
         {
+            lock (_projectPadlock)
+            {
+                _lastProjectId = 0;
+            }
+
             lock (_taskPadlock)
             {
                 _lastTaskId = 0;

@@ -1,9 +1,10 @@
 using Moq;
 using TaskList.ConsoleApp.IO;
 using TaskList.ConsoleApp.IO.Interfaces;
+using TaskList.ConsoleApp.Managers;
 using TaskList.Logic.Helpers.Interfaces;
 
-namespace TaskList.WebApp.Tests.Unit.Managers
+namespace TaskList.ConsoleApp.Tests.Unit.Managers
 {
     public class ConsoleTaskManagerTests
     {

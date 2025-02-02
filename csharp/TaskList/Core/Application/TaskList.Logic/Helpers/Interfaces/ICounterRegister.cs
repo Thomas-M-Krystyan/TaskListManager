@@ -8,6 +8,14 @@ namespace TaskList.Logic.Helpers.Interfaces
     public interface ICounterRegister
     {
         /// <summary>
+        /// Generates ID for the new <see cref="ProjectItem"/>.
+        /// </summary>
+        /// <returns>
+        ///   The new, unique ID.
+        /// </returns>
+        public long GetNextProjectId();
+
+        /// <summary>
         /// Generates ID for the new <see cref="TaskItem"/>.
         /// </summary>
         /// <returns>

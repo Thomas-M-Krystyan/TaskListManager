@@ -12,6 +12,7 @@ namespace TaskList.Logic.Managers
     public abstract class ConcurrentTaskManager : ITaskManager
     {
         private static readonly ConcurrentDictionary<string, ProjectItem> _taskList = [];
+        private static readonly ConcurrentDictionary<long, string> _primaryKeysMap = [];
 
         private readonly ICounterRegister _counter;
 
@@ -23,7 +24,6 @@ namespace TaskList.Logic.Managers
             _counter = counter;
         }
 
-        /// <inheritdoc cref="ITaskManager.DisplayTaskList()"/>
         public IReadOnlyDictionary<string, ProjectItem> GetTaskList()
         {
             // NOTE: It might look silly, but it's a shorter solution to make a deep-copy of the collection
@@ -46,6 +46,7 @@ namespace TaskList.Logic.Managers
             {
                 bool isSuccess = _taskList.TryAdd(projectName, new ProjectItem
                 {
+                    Id = _counter.GetNextProjectId(),
                     Name = projectName,
                     Tasks = []
                 });
@@ -67,7 +68,17 @@ namespace TaskList.Logic.Managers
             {
                 if (_taskList.TryGetValue(projectName, out ProjectItem project))
                 {
-                    project.Tasks.Add(new TaskItem { Id = _counter.GetNextTaskId(), Description = taskName, IsDone = false });
+                    //project.Tasks.Add(new TaskItem(_counter.GetNextTaskId(), taskName));
+                    long newTaskId = _counter.GetNextTaskId();
+
+                    // IDs is unique and project is existing, so these operations are safe
+                    project.Tasks[newTaskId] = new TaskItem
+                    {
+                        Id = newTaskId,
+                        Description = taskName,
+                        IsDone = false
+                    };
+                    _primaryKeysMap[newTaskId] = projectName;  // Task ID => Project Name
 
                     return CommandResponse.Success(content: string.Format("The task with name \"{0}\" was added to the project \"{1}\"", taskName, projectName));
                 }
@@ -87,14 +98,28 @@ namespace TaskList.Logic.Managers
         {
             try
             {
-                var existing = _taskList
-                        .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == taskId))
-                        .Where(task => task != null)
-                        .FirstOrDefault();
+                //var existing = _taskList
+                //        .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == taskId))
+                //        .Where(task => task != null)
+                //        .FirstOrDefault();
 
-                if (existing == null)
+                //if (existing == null)
+                //{
+                //    return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
+                //}
+
+                // Determine the name of the related project
+                if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
                 {
-                    return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
+                    TaskItem existing = _taskList[relatedProjectName].Tasks[taskId];
+
+                    existing.IsDone = isDone;
+
+                    // The collection item is struct. Modifying it "by reference" is not possible
+                    _taskList[relatedProjectName].Tasks.Remove(taskId);
+                    _taskList[relatedProjectName].Tasks[existing.Id] = existing;
+
+                    return CommandResponse.Success(content: string.Format("The task with ID {0} was marked as {1}", taskId, isDone ? "finished" : "unfinished"));
                 }
 
                 return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
@@ -111,6 +136,7 @@ namespace TaskList.Logic.Managers
         internal static void Reset()
         {
             _taskList.Clear();
+            _primaryKeysMap.Clear();
         }
     }
 }

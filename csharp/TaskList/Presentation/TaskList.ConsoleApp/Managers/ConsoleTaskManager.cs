@@ -1,5 +1,4 @@
-﻿using System.Text;
-using TaskList.ConsoleApp.IO.Interfaces;
+﻿using TaskList.ConsoleApp.IO.Interfaces;
 using TaskList.ConsoleApp.Managers.Interfaces;
 using TaskList.Domain.Models;
 using TaskList.Logic.Helpers.Interfaces;
@@ -32,15 +31,15 @@ namespace TaskList.ConsoleApp.Managers
 
                 // NOTE: Order of elements is not guaranteed in a ConcurrentDictionary. Even if the order of elements doesn't
                 //       matter at all from the perspective of business logic, it's important condition for the functional test
-                foreach (KeyValuePair<string, ProjectItem> project in GetTaskList())
+                foreach (KeyValuePair<string, ProjectItem> project in GetTaskList().OrderBy(project => project.Value.Id))
                 {
                     // Project name
                     _stringBuilder.AppendLine(project.Value.Name);
 
-                    foreach (TaskItem task in project.Value.Tasks)
+                    foreach (var task in project.Value.Tasks.OrderBy(task => task.Value.Id))
                     {
                         // Task description
-                        _stringBuilder.AppendLine(string.Format("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Description));
+                        _stringBuilder.AppendLine(string.Format("    [{0}] {1}: {2}", task.Value.IsDone ? 'x' : ' ', task.Value.Id, task.Value.Description));
                     }
 
                     _stringBuilder.AppendLine();
