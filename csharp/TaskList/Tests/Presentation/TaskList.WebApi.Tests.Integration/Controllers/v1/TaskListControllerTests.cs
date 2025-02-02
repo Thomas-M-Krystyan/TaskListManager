@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using TaskList.Logic.Helpers;
-using TaskList.Logic.Managers;
 using TaskList.Logic.Responses;
 using TaskList.WebApi.Controllers.v1;
 using TaskList.WebApi.Managers;
@@ -23,7 +22,6 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         public void SetUp()
         {
             CounterRegister.Reset();
-            ConcurrentTaskManager.Reset();
         }
 
         #region DisplayTaskListAsync()

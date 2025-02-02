@@ -31,7 +31,6 @@ namespace TaskList.Logic.Tests.Unit.Managers
         public void SetUp()
         {
             _counterMock.Reset();
-            ConcurrentTaskManager.Reset();
         }
 
         #region GetTaskList()
