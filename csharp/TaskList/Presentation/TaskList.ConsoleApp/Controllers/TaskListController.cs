@@ -82,6 +82,10 @@ namespace TaskList.ConsoleApp.Controllers
                     SetDeadlineCommand(commandRest[1]);
                     break;
 
+                case "today":
+                    ShowTodayCommand();
+                    break;
+
                 case "help":
                     HelpCommand();
                     break;
@@ -97,6 +101,12 @@ namespace TaskList.ConsoleApp.Controllers
         private void ShowAllCommand()
         {
             _console.Write(_taskManager.DisplayAllTasks().Content);
+
+            // TODO: The status of the operation could be used for UI/UX purposes
+        }
+        private void ShowTodayCommand()
+        {
+            _console.Write(_taskManager.DisplayTodayTasks().Content);
 
             // TODO: The status of the operation could be used for UI/UX purposes
         }
