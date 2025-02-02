@@ -92,6 +92,7 @@ namespace TaskList.ConsoleApp.Managers
                 "  uncheck <task ID>\r\n" +
                 "  deadline <task ID> <deadline>\r\n" +
                 "  today\r\n" +
+                "  help\r\n" +
                 "  quit\r\n";
 
             return helpMessage;
