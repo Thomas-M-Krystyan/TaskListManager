@@ -3,6 +3,7 @@ using TaskList.ConsoleApp.IO;
 using TaskList.ConsoleApp.IO.Interfaces;
 using TaskList.ConsoleApp.Managers;
 using TaskList.Logic.Helpers.Interfaces;
+using TaskList.Logic.Responses;
 
 namespace TaskList.ConsoleApp.Tests.Unit.Managers
 {
@@ -28,21 +29,21 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             const string projectName = "Project 1";
             const string taskName1 = "Task 1";
 
-            _counterMock
+            _ = _counterMock
                 .Setup(mock => mock.GetNextProjectId())
                 .Returns(default(long));
 
-            _counterMock
+            _ = _counterMock
                 .Setup(mock => mock.GetNextTaskId())
                 .Returns(default(long));
 
-            var taskManager = new ConsoleTaskManager(new StringBuilderProxy(), _counterMock.Object);
+            ConsoleTaskManager taskManager = new(new StringBuilderProxy(), _counterMock.Object);
 
-            taskManager.AddProject(projectName);
-            taskManager.AddTask(projectName, taskName1);
+            _ = taskManager.AddProject(projectName);
+            _ = taskManager.AddTask(projectName, taskName1);
 
             // Act
-            var result = taskManager.DisplayTaskList();
+            CommandResponse result = taskManager.DisplayTaskList();
 
             // Assert
             string expectedOutput =
@@ -64,10 +65,10 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
         public void DisplayTaskList_TaskList_Empty_ReturnsSuccess()
         {
             // Arrange
-            var taskManager = new ConsoleTaskManager(new StringBuilderProxy(), _counterMock.Object);
+            ConsoleTaskManager taskManager = new(new StringBuilderProxy(), _counterMock.Object);
 
             // Act
-            var result = taskManager.DisplayTaskList();
+            CommandResponse result = taskManager.DisplayTaskList();
 
             // Assert
             Assert.Multiple(() =>
@@ -83,18 +84,18 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             // Arrange
             const string exceptionMessage = "Expected test exception";
 
-            _stringBuilderMock
+            _ = _stringBuilderMock
                 .Setup(mock => mock.Clear())
                 .Throws(new Exception(exceptionMessage));
 
-            _counterMock
+            _ = _counterMock
                 .Setup(mock => mock.GetNextTaskId())
                 .Returns(default(long));
 
-            var taskManager = new ConsoleTaskManager(_stringBuilderMock.Object, _counterMock.Object);
+            ConsoleTaskManager taskManager = new(_stringBuilderMock.Object, _counterMock.Object);
 
             // Act
-            var result = taskManager.DisplayTaskList();
+            CommandResponse result = taskManager.DisplayTaskList();
 
             // Assert
             Assert.Multiple(() =>
@@ -113,10 +114,10 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
         public void Help_ReturnsExpectedString()
         {
             // Arrange
-            var taskManager = new ConsoleTaskManager(_stringBuilderMock.Object, _counterMock.Object);
+            ConsoleTaskManager taskManager = new(_stringBuilderMock.Object, _counterMock.Object);
 
             // Act
-            var actualMessage = taskManager.Help();
+            string actualMessage = taskManager.Help();
 
             // Assert
             const string expectedMessage =
@@ -126,6 +127,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
                 "  add task <project name> <task description>\r\n" +
                 "  check <task ID>\r\n" +
                 "  uncheck <task ID>\r\n" +
+                "  deadline <task ID> <deadline>\r\n" +
                 "  quit\r\n";
 
             Assert.That(actualMessage, Is.EqualTo(expectedMessage));
@@ -139,10 +141,10 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             // Arrange
             const string invalidCommand = "?:<!";
 
-            var taskManager = new ConsoleTaskManager(_stringBuilderMock.Object, _counterMock.Object);
+            ConsoleTaskManager taskManager = new(_stringBuilderMock.Object, _counterMock.Object);
 
             // Act
-            var actualMessage = taskManager.Error(invalidCommand);
+            string actualMessage = taskManager.Error(invalidCommand);
 
             // Assert
             Assert.That(actualMessage, Is.EqualTo($"I don't know what the command \"{invalidCommand}\" is."));
