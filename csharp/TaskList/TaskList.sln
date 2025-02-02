@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.Logic.Tests.Unit",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.ConsoleApp.Tests.Unit", "C:\Users\neoda\Downloads\chapter-hiring-assessment-backend-main\csharp\TaskList\Tests\Presentation\TaskList.ConsoleApp.Tests.Unit\TaskList.ConsoleApp.Tests.Unit.csproj", "{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.WebApi.Tests.Unit", "Tests\Presentation\TaskList.WebApi.Tests.Unit\TaskList.WebApi.Tests.Unit.csproj", "{40906F8A-6BF9-4AB0-BC30-37E908CE1890}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40906F8A-6BF9-4AB0-BC30-37E908CE1890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40906F8A-6BF9-4AB0-BC30-37E908CE1890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40906F8A-6BF9-4AB0-BC30-37E908CE1890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40906F8A-6BF9-4AB0-BC30-37E908CE1890}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,5 +100,6 @@ Global
 		{60B7B1DC-177D-49BF-A4AC-1DBC9C8E15DA} = {CDC50078-923C-49CC-8600-C3FA9D343510}
 		{DBF2565E-31FD-4058-AF9B-4969788A3A70} = {60B7B1DC-177D-49BF-A4AC-1DBC9C8E15DA}
 		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8} = {D2D0448A-F602-4BCA-8DE3-B34A0C575403}
+		{40906F8A-6BF9-4AB0-BC30-37E908CE1890} = {D2D0448A-F602-4BCA-8DE3-B34A0C575403}
 	EndGlobalSection
 EndGlobal
