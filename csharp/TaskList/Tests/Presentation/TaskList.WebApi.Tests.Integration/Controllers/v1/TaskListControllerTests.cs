@@ -69,7 +69,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
         #endregion
 
-        #region DisplayTaskListAsync()
+        #region AddProjectAsync()
         [Test]
         public async Task AddProjectAsync_HappyPath_IntegrationTest()
         {
