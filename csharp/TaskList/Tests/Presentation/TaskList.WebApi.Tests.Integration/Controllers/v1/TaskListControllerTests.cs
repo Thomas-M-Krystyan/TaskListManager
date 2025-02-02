@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System.Threading.Tasks;
 using TaskList.Logic.Helpers;
 using TaskList.Logic.Responses;
 using TaskList.WebApi.Controllers.v1;
