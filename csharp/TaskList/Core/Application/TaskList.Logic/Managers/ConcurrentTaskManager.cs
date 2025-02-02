@@ -110,5 +110,32 @@ namespace TaskList.Logic.Managers
                 return CommandResponse.Failure(exception);
             }
         }
+
+        /// <inheritdoc cref="ITaskManager.SetDeadline(long, DateOnly)"/>
+        public CommandResponse SetDeadline(long taskId, DateOnly deadline)
+        {
+            try
+            {
+                // Determine the name of the related project
+                if (_primaryKeysMap.TryGetValue(taskId, out string? relatedProjectName))
+                {
+                    TaskItem existing = _taskList[relatedProjectName].Tasks[taskId];
+
+                    existing.Deadline = deadline;
+
+                    // The collection item is struct. Modifying it "by reference" is not possible
+                    _ = _taskList[relatedProjectName].Tasks.Remove(taskId);
+                    _ = _taskList[relatedProjectName].Tasks[existing.Id] = existing;
+
+                    return CommandResponse.Success(content: string.Format("The deadline for the task with ID {0} was set to {1}", taskId, deadline));
+                }
+
+                return CommandResponse.Failure(string.Format("Could not find a task with an ID of {0}", taskId));
+            }
+            catch (Exception exception)
+            {
+                return CommandResponse.Failure(exception);
+            }
+        }
     }
 }

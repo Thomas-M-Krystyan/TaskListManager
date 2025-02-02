@@ -53,5 +53,15 @@ namespace TaskList.Logic.Managers.Interfaces
         ///   The result of the operation.
         /// </returns>
         public CommandResponse CheckTask(long taskId, bool isDone);
+
+        /// <summary>
+        /// Adds the deadline to the specific <see cref="TaskItem"/>.
+        /// </summary>
+        /// <param name="taskId">The ID of the task.</param>
+        /// <param name="deadline">The deadline of the task.</param>
+        /// <returns>
+        ///   The result of the operation.
+        /// </returns>
+        public CommandResponse SetDeadline(long taskId, DateOnly deadline);
     }
 }
