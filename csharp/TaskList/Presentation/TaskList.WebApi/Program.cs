@@ -1,4 +1,9 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Reflection;
+using TaskList.Logic.Helpers;
+using TaskList.Logic.Helpers.Interfaces;
+using TaskList.WebApi.Managers;
+using TaskList.WebApi.Managers.Interfaces;
 
 namespace TaskList.WebApi
 {
@@ -28,9 +33,9 @@ namespace TaskList.WebApi
 
         private static WebApplicationBuilder RegisterNetServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            _ = builder.Services.AddControllers();
+            _ = builder.Services.AddEndpointsApiExplorer();
+            _ = builder.Services.AddSwaggerGen();
 
             return builder;
         }
@@ -40,7 +45,7 @@ namespace TaskList.WebApi
         private static WebApplication Configure(this WebApplicationBuilder builder)
         {
             // Add the XML documentation to the API Endpoints in Swagger UI
-            builder.Services.AddSwaggerGen(options =>
+            _ = builder.Services.AddSwaggerGen(options =>
             {
                 string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -52,15 +57,15 @@ namespace TaskList.WebApi
             // Configure the HTTP request pipeline
             if (webApplication.Environment.IsDevelopment())
             {
-                webApplication.UseSwagger();
-                webApplication.UseSwaggerUI();
+                _ = webApplication.UseSwagger();
+                _ = webApplication.UseSwaggerUI();
             }
 
-            webApplication.UseHttpsRedirection();
+            _ = webApplication.UseHttpsRedirection();
 
-            webApplication.UseAuthorization();
+            _ = webApplication.UseAuthorization();
 
-            webApplication.MapControllers();
+            _ = webApplication.MapControllers();
 
             return webApplication;
         }
