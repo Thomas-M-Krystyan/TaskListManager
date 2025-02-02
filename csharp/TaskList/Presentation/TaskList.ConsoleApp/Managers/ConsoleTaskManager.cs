@@ -13,6 +13,7 @@ namespace TaskList.ConsoleApp.Managers
     internal sealed class ConsoleTaskManager : ConcurrentTaskManager, IConsoleTaskManager
     {
         private readonly IStringBuilder _stringBuilder;
+        private readonly HashSet<string> _todayProjects = [];
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConsoleTaskManager"/> class.
@@ -29,7 +30,7 @@ namespace TaskList.ConsoleApp.Managers
             {
                 _stringBuilder.Clear();
 
-                IReadOnlyDictionary<long, TaskItem> tasks = GetAllTasks();
+                Dictionary<long, TaskItem> tasks = GetTasksSortedById(GetAllTasks());
 
                 foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetAllProjects()))
                 {
@@ -59,22 +60,29 @@ namespace TaskList.ConsoleApp.Managers
             try
             {
                 _stringBuilder.Clear();
+                _todayProjects.Clear();
 
-                //foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetAllProjects()))
-                //{
-                //    // Project name
-                //    _stringBuilder.AppendLine(project.Value.Name);
+                DateOnly today = DateOnly.FromDateTime(DateTime.Today);
 
-                //    foreach (KeyValuePair<long, TaskItem> task in GetTasksSortedById(project.Value))
-                //    {
-                //        // Task description
-                //        _stringBuilder.AppendLine(GetTaskDetails(task.Value));
-                //    }
+                Dictionary<long, TaskItem> todayTasks = GetTasksSortedById(GetAllTasks()
+                    .Where(task => task.Value.Deadline.Equals(today)));
 
-                //    _stringBuilder.AppendLine();
-                //}
+                foreach (KeyValuePair<long, TaskItem> task in todayTasks)
+                {
+                    if (_todayProjects.Add(task.Value.ProjectName))
+                    {
+                        // Project name
+                        _stringBuilder.AppendLine();
+                        _stringBuilder.AppendLine(task.Value.ProjectName);
+                    }
 
-                return CommandResponse.Success(_stringBuilder.ToString(), true);
+                    // Task description
+                    _stringBuilder.AppendLine(GetTaskDetails(task.Value));
+                }
+
+                _stringBuilder.AppendLine();
+
+                return CommandResponse.Success(_stringBuilder.ToString().TrimStart(), true);
             }
             catch (Exception exception)
             {
@@ -109,13 +117,11 @@ namespace TaskList.ConsoleApp.Managers
         #region Helper methods
         // NOTE: Order of elements is not guaranteed in a ConcurrentDictionary. Even if the order of elements doesn't
         //       matter at all from the perspective of business logic, it might be important from the user perspective
-        private static KeyValuePair<string, ProjectItem>[] GetProjectsSortedById(IEnumerable<KeyValuePair<string, ProjectItem>> taskList)
+        private static KeyValuePair<string, ProjectItem>[] GetProjectsSortedById(IReadOnlyDictionary<string, ProjectItem> taskList)
             => [.. taskList.OrderBy(project => project.Value.OrderNumber)];
 
-        private static KeyValuePair<long, TaskItem>[] GetTasksSortedById(IEnumerable<KeyValuePair<long, TaskItem>> tasks)
-        {
-            return [.. tasks.OrderBy(task => task.Value.Id)];
-        }
+        private static Dictionary<long, TaskItem> GetTasksSortedById(IEnumerable<KeyValuePair<long, TaskItem>> tasks)
+            => tasks.OrderBy(task => task.Value.Id).ToDictionary();
 
         private static string GetTaskDetails(TaskItem task)
             => string.Format("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Name);
