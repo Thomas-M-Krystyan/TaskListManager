@@ -66,6 +66,14 @@ namespace TaskList.ConsoleApp.Controllers
                     ShowAllCommand();
                     break;
 
+                case "today":
+                    ShowTodayCommand();
+                    break;
+
+                case "view-by-deadline":
+                    ShowByDeadlineCommand();
+                    break;
+
                 case "add":
                     AddCommand(commandRest[1]);
                     break;
@@ -80,10 +88,6 @@ namespace TaskList.ConsoleApp.Controllers
 
                 case "deadline":
                     SetDeadlineCommand(commandRest[1]);
-                    break;
-
-                case "today":
-                    ShowTodayCommand();
                     break;
 
                 case "help":
@@ -104,9 +108,17 @@ namespace TaskList.ConsoleApp.Controllers
 
             // TODO: The status of the operation could be used for UI/UX purposes
         }
+
         private void ShowTodayCommand()
         {
             _console.Write(_taskManager.DisplayTodayTasks().Content);
+
+            // TODO: The status of the operation could be used for UI/UX purposes
+        }
+
+        private void ShowByDeadlineCommand()
+        {
+            _console.Write(_taskManager.DisplayTasksByDeadline().Content);
 
             // TODO: The status of the operation could be used for UI/UX purposes
         }

@@ -37,9 +37,9 @@ namespace TaskList.Logic.Managers
         {
             lock (transactionPadlock)
             {
-            return JsonSerializer.Deserialize<Dictionary<string, ProjectItem>>(
-                JsonSerializer.Serialize(_projects)) ?? [];
-        }
+                return JsonSerializer.Deserialize<Dictionary<string, ProjectItem>>(
+                    JsonSerializer.Serialize(_projects)) ?? [];
+            }
         }
 
         /// <inheritdoc cref="ITaskManager.GetAllTasks()"/>
@@ -47,9 +47,9 @@ namespace TaskList.Logic.Managers
         {
             lock (transactionPadlock)
             {
-            return JsonSerializer.Deserialize<Dictionary<long, TaskItem>>(
-                JsonSerializer.Serialize(_tasks)) ?? [];
-        }
+                return JsonSerializer.Deserialize<Dictionary<long, TaskItem>>(
+                    JsonSerializer.Serialize(_tasks)) ?? [];
+            }
         }
 
         /// <inheritdoc cref="ITaskManager.DisplayAllTasks()"/>
@@ -57,6 +57,9 @@ namespace TaskList.Logic.Managers
 
         /// <inheritdoc cref="ITaskManager.DisplayTodayTasks()"/>
         public abstract CommandResponse DisplayTodayTasks();
+
+        /// <inheritdoc cref="ITaskManager.DisplayTasksByDeadline()"/>
+        public abstract CommandResponse DisplayTasksByDeadline();
 
         /// <inheritdoc cref="ITaskManager.AddProject(string)"/>
         public CommandResponse AddProject(string projectName)

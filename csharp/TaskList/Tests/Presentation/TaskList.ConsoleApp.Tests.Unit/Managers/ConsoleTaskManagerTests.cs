@@ -248,12 +248,13 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
             const string expectedMessage =
                 $"Commands:\r\n" +
                 "  show\r\n" +
+                "  today\r\n" +
+                "  view-by-deadline\r\n" +
                 "  add project <project name>\r\n" +
                 "  add task <project name> <task description>\r\n" +
                 "  check <task ID>\r\n" +
                 "  uncheck <task ID>\r\n" +
                 "  deadline <task ID> <deadline>\r\n" +
-                "  today\r\n" +
                 "  help\r\n" +
                 "  quit\r\n";
 

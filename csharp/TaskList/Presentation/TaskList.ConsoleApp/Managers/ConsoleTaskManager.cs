@@ -90,18 +90,35 @@ namespace TaskList.ConsoleApp.Managers
             }
         }
 
+        /// <inheritdoc cref="ITaskManager.DisplayTasksByDeadline()"/>
+        public override CommandResponse DisplayTasksByDeadline()
+        {
+            try
+            {
+                _stringBuilder.Clear();
+                _todayProjects.Clear();
+
+                throw new NotImplementedException();
+            }
+            catch (Exception exception)
+            {
+                return CommandResponse.Failure(exception);
+            }
+        }
+
         /// <inheritdoc cref="IConsoleTaskManager.Help()"/>
         public string Help()
         {
             const string helpMessage =
                 $"Commands:\r\n" +
                 "  show\r\n" +
+                "  today\r\n" +
+                "  view-by-deadline\r\n" +
                 "  add project <project name>\r\n" +
                 "  add task <project name> <task description>\r\n" +
                 "  check <task ID>\r\n" +
                 "  uncheck <task ID>\r\n" +
                 "  deadline <task ID> <deadline>\r\n" +
-                "  today\r\n" +
                 "  help\r\n" +
                 "  quit\r\n";
 

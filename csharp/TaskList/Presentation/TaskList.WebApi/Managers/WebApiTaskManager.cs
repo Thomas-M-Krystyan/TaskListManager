@@ -52,5 +52,19 @@ namespace TaskList.WebApi.Managers
                 return CommandResponse.Failure(exception);
             }
         }
+
+        /// <inheritdoc cref="ITaskManager.DisplayTasksByDeadline()"/>
+        public override CommandResponse DisplayTasksByDeadline()
+        {
+            try
+            {
+                return CommandResponse.Success(
+                    JsonSerializer.Serialize(new { }), true);
+            }
+            catch (Exception exception)
+            {
+                return CommandResponse.Failure(exception);
+            }
+        }
     }
 }

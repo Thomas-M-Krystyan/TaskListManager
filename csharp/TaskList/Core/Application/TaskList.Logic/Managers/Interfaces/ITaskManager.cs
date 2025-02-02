@@ -43,6 +43,14 @@ namespace TaskList.Logic.Managers.Interfaces
         public CommandResponse DisplayTodayTasks();
 
         /// <summary>
+        /// Displays <see cref="TaskItem"/>s grouped and sorted by deadlines and <see cref="ProjectItem"/>s.
+        /// </summary>
+        /// <returns>
+        ///   The result of the operation.
+        /// </returns>
+        public CommandResponse DisplayTasksByDeadline();
+
+        /// <summary>
         /// Adds <see cref="ProjectItem"/> to the internal task list.
         /// </summary>
         /// <param name="projectName">The name of the project to add.</param>

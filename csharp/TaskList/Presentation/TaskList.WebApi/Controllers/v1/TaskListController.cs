@@ -71,6 +71,26 @@ namespace TaskList.WebApi.Controllers.v1
         }
 
         /// <summary>
+        /// Displays the list of tasks grouped and sorted by deadlines and projects.
+        /// </summary>
+        /// <remarks>
+        ///   URL: api/v1/tasklist/tasks/view_by_deadline
+        /// </remarks>
+        /// <returns>
+        ///   The status of the operation represented by HTTP Status Code and the message.
+        /// </returns>
+        [HttpGet]
+        [Route("tasks/view_by_deadline")]
+        public async Task<IActionResult> DisplayTasksByDeadlineAsync()
+        {
+            CommandResponse response = await Task.Run(_taskManager.DisplayTasksByDeadline);
+
+            return response.IsSuccess
+                ? Ok(response.Content)
+                : BadRequest(response.Content);
+        }
+
+        /// <summary>
         /// Adds a new project.
         /// </summary>
         /// <param name="projectName">The name of the project.</param>
