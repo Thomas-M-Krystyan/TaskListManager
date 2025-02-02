@@ -54,26 +54,26 @@ namespace TaskList.ConsoleApp.Tests.Functional
             Execute("show");
 
             // Adding items
-            Execute("add project secrets");
-            Execute("add task secrets Eat more donuts.");
-            Execute("add task secrets Destroy all humans.");
+            Execute("add project Secrets");
+            Execute("add task Secrets Eat more donuts.");
+            Execute("add task Secrets Destroy all humans.");
 
             Execute("show");
             ReadLines(
-                "secrets",
+                "Secrets:",
                 "    [ ] 1: Eat more donuts.",
                 "    [ ] 2: Destroy all humans.",
                 ""
             );
 
             // Checking
-            Execute("add project training");
-            Execute("add task training Four Elements of Simple Design");
-            Execute("add task training SOLID");
-            Execute("add task training Coupling and Cohesion");
-            Execute("add task training Primitive Obsession");
-            Execute("add task training Outside-In TDD");
-            Execute("add task training Interaction-Driven Design");
+            Execute("add project Training");
+            Execute("add task Training Four Elements of Simple Design");
+            Execute("add task Training SOLID");
+            Execute("add task Training Coupling and Cohesion");
+            Execute("add task Training Primitive Obsession");
+            Execute("add task Training Outside-In TDD");
+            Execute("add task Training Interaction-Driven Design");
 
             Execute("check 1");
             Execute("check 3");
@@ -82,11 +82,11 @@ namespace TaskList.ConsoleApp.Tests.Functional
 
             Execute("show");
             ReadLines(
-                "secrets",
+                "Secrets:",
                 "    [x] 1: Eat more donuts.",
                 "    [ ] 2: Destroy all humans.",
                 "",
-                "training",
+                "Training:",
                 "    [x] 3: Four Elements of Simple Design",
                 "    [ ] 4: SOLID",
                 "    [x] 5: Coupling and Cohesion",
@@ -101,11 +101,11 @@ namespace TaskList.ConsoleApp.Tests.Functional
 
             Execute("show");
             ReadLines(
-                "secrets",
+                "Secrets:",
                 "    [ ] 1: Eat more donuts.",
                 "    [ ] 2: Destroy all humans.",
                 "",
-                "training",
+                "Training:",
                 "    [x] 3: Four Elements of Simple Design",
                 "    [ ] 4: SOLID",
                 "    [x] 5: Coupling and Cohesion",
@@ -117,20 +117,47 @@ namespace TaskList.ConsoleApp.Tests.Functional
 
             // Deadlines
             DateOnly today = DateOnly.FromDateTime(DateTime.Today);
-            
+            DateOnly tomorrow = today.AddDays(1);
+
             Execute($"deadline 2 {today}");
             Execute($"deadline 4 {today}");
             Execute($"deadline 5 {today}");
-            Execute($"deadline 8 {today.AddDays(1)}");
+            Execute($"deadline 8 {tomorrow}");
 
             Execute("today");
             ReadLines(
-                "secrets",
+                "Secrets:",
                 "    [ ] 2: Destroy all humans.",
                 "",
-                "training",
+                "Training:",
                 "    [ ] 4: SOLID",
                 "    [x] 5: Coupling and Cohesion",
+                ""
+            );
+
+            string todayString = today.ToString("yyyy-MM-dd");
+            string tomorrowString = tomorrow.ToString("yyyy-MM-dd");
+
+            Execute("view-by-deadline");
+            ReadLines(
+                $"{todayString}:",
+                "    Secrets:",
+                "        [ ] 2: Destroy all humans.",
+                "",
+                "    Training:",
+                "        [ ] 4: SOLID",
+                "        [x] 5: Coupling and Cohesion",
+                "",
+                $"{tomorrowString}:",
+                "    Training:",
+                "        [ ] 8: Interaction-Driven Design",
+                "",
+                "No deadline:",
+                "    Secrets:",
+                "        [ ] 1: Eat more donuts.",
+                "        [x] 3: Four Elements of Simple Design",
+                "        [x] 6: Primitive Obsession",
+                "        [ ] 7: Outside-In TDD",
                 ""
             );
 
