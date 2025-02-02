@@ -64,10 +64,8 @@ namespace TaskList.Logic.Managers
             {
                 if (_taskList.TryGetValue(projectName, out ProjectItem project))
                 {
-                    //project.Tasks.Add(new TaskItem(_counter.GetNextTaskId(), taskName));
                     long newTaskId = _counter.GetNextTaskId();
 
-                    // IDs is unique and project is existingTask, so these operations are safe
                     project.Tasks[newTaskId] = new TaskItem(newTaskId, taskName);
                     _primaryKeysMap[newTaskId] = projectName;  // Task ID => Project Name
 
