@@ -45,12 +45,7 @@ namespace TaskList.Logic.Managers
         {
             try
             {
-                bool isSuccess = _taskList.TryAdd(projectName, new ProjectItem
-                {
-                    Id = _counter.GetNextProjectId(),
-                    Name = projectName,
-                    Tasks = []
-                });
+                bool isSuccess = _taskList.TryAdd(projectName, new ProjectItem(_counter.GetNextProjectId(), projectName));
 
                 return isSuccess
                     ? CommandResponse.Success(content: string.Format("The project with name \"{0}\" was created", projectName))
