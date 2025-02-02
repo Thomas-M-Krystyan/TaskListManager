@@ -36,11 +36,11 @@ namespace TaskList.WebApi.Tests.Unit.Managers
             // Arrange
             _ = _counterMock
                 .Setup(counter => counter.GetNextProjectId())
-                .Returns(default(long));
+                .Returns(1);
 
             _ = _counterMock
                 .Setup(counter => counter.GetNextTaskId())
-                .Returns(default(long));
+                .Returns(1);
 
             const string projectName = "Project 1";
             const string taskName = "Task 1";
@@ -60,15 +60,13 @@ namespace TaskList.WebApi.Tests.Unit.Managers
                 _counterMock.Verify(mock => mock.GetNextTaskId(), Times.Once);
 
                 const string expectedJson =
-                "{" +
-                  "\"Project 1\":{" +
-                    "\"Id\":0," +
-                    "\"Name\":\"Project 1\"," +
-                    "\"Tasks\":{" +
-                      "\"0\":{" +
-                        "\"Id\":0,\"Name\":\"Task 1\",\"IsDone\":false,\"Deadline\":\"9999-12-31\"" +
-                      "}" +
-                    "}" +
+                "{\"1\":" +
+                  "{" +
+                    "\"Id\":1," +
+                    "\"ProjectName\":\"Project 1\"," +
+                    "\"Name\":\"Task 1\"," +
+                    "\"IsDone\":false," +
+                    "\"Deadline\":\"9999-12-31\"" +
                   "}" +
                 "}";
 
