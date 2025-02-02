@@ -6,7 +6,7 @@ using TaskList.WebApi.Managers;
 namespace TaskList.WebApi.Tests.Unit.Managers
 {
     [TestFixture]
-    public sealed class Tests
+    public sealed class WebApiTaskManagerTests
     {
         #region Mocks
         private readonly Mock<ICounterRegister> _counterMock = new(MockBehavior.Strict);
