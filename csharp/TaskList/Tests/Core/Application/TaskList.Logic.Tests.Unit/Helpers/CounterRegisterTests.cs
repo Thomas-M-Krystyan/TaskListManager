@@ -5,20 +5,12 @@ namespace TaskList.Logic.Tests.Unit.Helpers
     [TestFixture]
     public sealed class CounterRegisterTests
     {
-        private readonly CounterRegister _counterRegister = new();
-
-        [SetUp]
-        public void TearDown()
-        {
-            CounterRegister.Reset();
-        }
-
         #region Project IDs
         [Test]
         public void GetNextProjectId_Called_OneTime_ReturnsIncrementedId()
         {
             // Act
-            long result = _counterRegister.GetNextProjectId();
+            long result = new CounterRegister().GetNextProjectId();
 
             // Assert
             Assert.That(result, Is.EqualTo(1));
@@ -28,31 +20,16 @@ namespace TaskList.Logic.Tests.Unit.Helpers
         public void GetNextProjectId_Called_ManyTimes_ReturnsIncrementedId()
         {
             // Act
-            long result1 = _counterRegister.GetNextProjectId();
-            long result2 = _counterRegister.GetNextProjectId();
+            CounterRegister counterRegister = new();
+
+            long result1 = counterRegister.GetNextProjectId();
+            long result2 = counterRegister.GetNextProjectId();
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result1, Is.EqualTo(1));
                 Assert.That(result2, Is.EqualTo(2));
-            });
-        }
-
-        [Test]
-        public void GetNextProjectId_Created_MultipleTimes_ReturnsIncrementedId()
-        {
-            // Act
-            long result1 = _counterRegister.GetNextProjectId();
-            long result2 = new CounterRegister().GetNextProjectId();  // All instances should use the same shared counter
-            long result3 = _counterRegister.GetNextProjectId();
-
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(result1, Is.EqualTo(1));
-                Assert.That(result2, Is.EqualTo(2));
-                Assert.That(result3, Is.EqualTo(3));
             });
         }
         #endregion
@@ -62,7 +39,7 @@ namespace TaskList.Logic.Tests.Unit.Helpers
         public void GetNextTaskId_Called_OneTime_ReturnsIncrementedId()
         {
             // Act
-            long result = _counterRegister.GetNextTaskId();
+            long result = new CounterRegister().GetNextTaskId();
 
             // Assert
             Assert.That(result, Is.EqualTo(1));
@@ -72,31 +49,16 @@ namespace TaskList.Logic.Tests.Unit.Helpers
         public void GetNextTaskId_Called_ManyTimes_ReturnsIncrementedId()
         {
             // Act
-            long result1 = _counterRegister.GetNextTaskId();
-            long result2 = _counterRegister.GetNextTaskId();
+            CounterRegister counterRegister = new();
+
+            long result1 = counterRegister.GetNextTaskId();
+            long result2 = counterRegister.GetNextTaskId();
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result1, Is.EqualTo(1));
                 Assert.That(result2, Is.EqualTo(2));
-            });
-        }
-
-        [Test]
-        public void GetNextTaskId_Created_MultipleTimes_ReturnsIncrementedId()
-        {
-            // Act
-            long result1 = _counterRegister.GetNextTaskId();
-            long result2 = new CounterRegister().GetNextTaskId();  // All instances should use the same shared counter
-            long result3 = _counterRegister.GetNextTaskId();
-
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(result1, Is.EqualTo(1));
-                Assert.That(result2, Is.EqualTo(2));
-                Assert.That(result3, Is.EqualTo(3));
             });
         }
         #endregion

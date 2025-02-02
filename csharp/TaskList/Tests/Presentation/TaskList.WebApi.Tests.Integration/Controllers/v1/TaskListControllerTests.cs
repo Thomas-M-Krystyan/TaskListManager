@@ -18,12 +18,6 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         private const long TaskId = 1;
         #endregion
 
-        [SetUp]
-        public void SetUp()
-        {
-            CounterRegister.Reset();
-        }
-
         #region DisplayTaskListAsync()
         [Test]
         public async Task DisplayTaskListAsync_HappyPath_IntegrationTest()

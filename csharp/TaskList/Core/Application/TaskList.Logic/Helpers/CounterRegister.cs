@@ -8,8 +8,8 @@ namespace TaskList.Logic.Helpers
         private static readonly object _projectPadlock = new();
         private static readonly object _taskPadlock = new();
 
-        private static long _lastProjectId = 0;
-        private static long _lastTaskId = 0;
+        private long _lastProjectId = 0;
+        private long _lastTaskId = 0;
 
         /// <inheritdoc cref="ICounterRegister.GetNextProjectId()"/>
         public long GetNextProjectId()
@@ -26,22 +26,6 @@ namespace TaskList.Logic.Helpers
             lock (_taskPadlock)
             {
                 return ++_lastTaskId;
-            }
-        }
-
-        /// <summary>
-        /// Resets this shared counter.
-        /// </summary>
-        public static void Reset()
-        {
-            lock (_projectPadlock)
-            {
-                _lastProjectId = 0;
-            }
-
-            lock (_taskPadlock)
-            {
-                _lastTaskId = 0;
             }
         }
     }
