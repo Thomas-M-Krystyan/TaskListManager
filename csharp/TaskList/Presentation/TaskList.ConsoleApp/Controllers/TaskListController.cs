@@ -1,7 +1,8 @@
 ﻿using TaskList.ConsoleApp.Controllers.Interfaces;
 using TaskList.ConsoleApp.IO.Interfaces;
 using TaskList.ConsoleApp.Managers.Interfaces;
-using TaskList.Domain.Models;
+using TaskList.Logic.Extensions;
+using TaskList.Logic.Responses;
 
 namespace TaskList.ConsoleApp.Controllers
 {
@@ -13,10 +14,6 @@ namespace TaskList.ConsoleApp.Controllers
 
         private readonly IConsole _console;
         private readonly IConsoleTaskManager _taskManager;
-
-        private readonly Dictionary<string, ProjectItem> _tasks = [];
-
-        private long _lastId = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskListController"/> class.
@@ -32,13 +29,15 @@ namespace TaskList.ConsoleApp.Controllers
         {
             _console.WriteLine(StartupText);
 
+            string command = string.Empty;
+
             while (true)
             {
                 try
                 {
                     _console.Write("> ");
 
-                    string command = _console.ReadLine();
+                    command = _console.ReadLine();
 
                     if (command.Equals(QUIT, StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -49,7 +48,8 @@ namespace TaskList.ConsoleApp.Controllers
                 }
                 catch (Exception exception)
                 {
-                    _console.WriteLine(exception.Message);
+                    _console.WriteLine(_taskManager.Error(command));
+                    _console.WriteLine(exception.GetMessage());
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace TaskList.ConsoleApp.Controllers
             string[] commandRest = commandLine.Split(' ', 2);
             string command = commandRest[0];
 
-            switch (command.ToLower())
+            switch (command.ToLower())  // TODO: This can be improved by using Spans or if-else statements. ToLower() is working but introducing overhead
             {
                 case "show":
                     ShowCommand();
@@ -92,17 +92,7 @@ namespace TaskList.ConsoleApp.Controllers
         #region Commands
         private void ShowCommand()
         {
-            foreach (KeyValuePair<string, ProjectItem> project in _tasks)
-            {
-                _console.WriteLine(project.Key);
-
-                foreach (TaskItem task in project.Value.Tasks)
-                {
-                    _console.WriteLine("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Description);
-                }
-
-                _console.WriteLine();
-            }
+            _console.Write(_taskManager.DisplayTaskList().Content);
 
             // TODO: The status of the operation could be used for UI/UX purposes
         }
@@ -112,17 +102,22 @@ namespace TaskList.ConsoleApp.Controllers
             string[] subcommandRest = commandLine.Split(' ', 2);
             string subcommand = subcommandRest[0];
 
-            if (subcommand == "project")
+            if (subcommand.Equals("project", StringComparison.InvariantCultureIgnoreCase))
             {
-                AddProject(subcommandRest[1]);
+                _ = _taskManager.AddProject(subcommandRest[1]);
 
                 // TODO: The status of the operation could be used for UI/UX purposes
             }
-            else if (subcommand == "task")
+            else if (subcommand.Equals("task", StringComparison.InvariantCultureIgnoreCase))
             {
                 string[] projectTask = subcommandRest[1].Split(' ', 2);
 
-                AddTask(projectTask[0], projectTask[1]);
+                CommandResponse result = _taskManager.AddTask(projectTask[0], projectTask[1]);
+
+                if (result.IsFailure)
+                {
+                    _console.WriteLine(result.Content);
+                }
 
                 // TODO: More statuses of the operations could be used for UI/UX purposes
             }
@@ -130,44 +125,16 @@ namespace TaskList.ConsoleApp.Controllers
             // TODO: Invalid subcommand (for other cases than "project" and "task") should be reported to the used
         }
 
-        private void AddProject(string name)
-        {
-            _tasks[name] = new ProjectItem { Name = name, Tasks = [] };
-
-            // TODO: The status of the operation could be used for UI/UX purposes
-        }
-
-        private void AddTask(string project, string description)
-        {
-            if (_tasks.TryGetValue(project, out ProjectItem projectTasks))
-            {
-                projectTasks.Tasks.Add(new TaskItem { Id = NextId(), Description = description, IsDone = false });
-            }
-            else
-            {
-                Console.WriteLine("Could not find a project with the name \"{0}\".", project);
-            }
-
-            // TODO: The status of the operation could be used for UI/UX purposes
-        }
-
         private void SetDoneCommand(string idString, bool isDone)
         {
             if (long.TryParse(idString, out long taskId))
             {
-                TaskItem? identifiedTask = _tasks
-                    .Select(project => project.Value.Tasks.FirstOrDefault(task => task.Id == taskId))
-                    .Where(task => task != null)
-                    .FirstOrDefault();
+                CommandResponse result = _taskManager.CheckTask(taskId, isDone);
 
-                if (identifiedTask == null)
+                if (result.IsFailure)
                 {
-                    _console.WriteLine("Could not find a task with an ID of {0}.", taskId);
-
-                    return;
+                    _console.WriteLine(result.Content);
                 }
-
-                identifiedTask.IsDone = isDone;
             }
 
             // TODO: The status of the operation could be used for UI/UX purposes
@@ -175,24 +142,12 @@ namespace TaskList.ConsoleApp.Controllers
 
         private void HelpCommand()
         {
-            _console.WriteLine("Commands:");
-            _console.WriteLine("  show");
-            _console.WriteLine("  add project <project name>");
-            _console.WriteLine("  add task <project name> <task description>");
-            _console.WriteLine("  check <task ID>");
-            _console.WriteLine("  uncheck <task ID>");
-            _console.WriteLine("  quit");
-            _console.WriteLine();
+            _console.WriteLine(_taskManager.Help());
         }
 
         private void ErrorCommand(string command)
         {
-            _console.WriteLine("I don't know what the command \"{0}\" is.", command);
-        }
-
-        private long NextId()
-        {
-            return ++_lastId;
+            _console.WriteLine(_taskManager.Error(command));
         }
         #endregion
     }
