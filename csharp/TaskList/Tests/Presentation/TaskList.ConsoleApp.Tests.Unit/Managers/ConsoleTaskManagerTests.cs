@@ -7,7 +7,8 @@ using TaskList.Logic.Responses;
 
 namespace TaskList.ConsoleApp.Tests.Unit.Managers
 {
-    public class ConsoleTaskManagerTests
+    [TestFixture]
+    public sealed class ConsoleTaskManagerTests
     {
         #region Mocks
         private readonly Mock<IStringBuilder> _stringBuilderMock = new(MockBehavior.Strict);
