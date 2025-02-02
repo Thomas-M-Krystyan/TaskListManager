@@ -119,5 +119,29 @@ namespace TaskList.WebApi.Controllers.v1
                 ? Ok(response.Content)
                 : BadRequest(response.Content);
         }
+
+        /// <summary>
+        /// Sets the deadline for the task.
+        /// </summary>
+        /// <param name="taskId">The unique identifier of the task.</param>
+        /// <param name="deadline">The deadline for the task.</param>
+        /// <remarks>
+        ///   URL: api/v1/tasklist/tasks/1?deadline=01-01-0001
+        /// </remarks>
+        /// <returns>
+        ///   The status of the operation represented by HTTP Status Code and the message.
+        /// </returns>
+        [HttpPut]
+        [Route("tasks/{taskId}")]
+        public async Task<IActionResult> SetDeadlineAsync(
+            [Required, FromRoute] long taskId,
+            [Required, FromQuery] DateOnly deadline)
+        {
+            CommandResponse response = await Task.Run(() => _taskManager.SetDeadline(taskId, deadline));
+
+            return response.IsSuccess
+                ? Ok(response.Content)
+                : BadRequest(response.Content);
+        }
     }
 }
