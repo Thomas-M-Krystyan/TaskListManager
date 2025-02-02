@@ -129,6 +129,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
                 "  check <task ID>\r\n" +
                 "  uncheck <task ID>\r\n" +
                 "  deadline <task ID> <deadline>\r\n" +
+                "  today\r\n" +
                 "  quit\r\n";
 
             Assert.That(actualMessage, Is.EqualTo(expectedMessage));
