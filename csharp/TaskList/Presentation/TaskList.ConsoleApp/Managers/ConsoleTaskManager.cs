@@ -35,7 +35,7 @@ namespace TaskList.ConsoleApp.Managers
                 foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById(GetAllProjects()))
                 {
                     // Project name
-                    _stringBuilder.AppendLine(project.Value.Name);
+                    _stringBuilder.AppendLine(project.Value.Name + ":");
 
                     foreach (long taskId in project.Value.TaskIds)
                     {
@@ -73,7 +73,7 @@ namespace TaskList.ConsoleApp.Managers
                     {
                         // Project name
                         _stringBuilder.AppendLine();
-                        _stringBuilder.AppendLine(task.Value.ProjectName);
+                        _stringBuilder.AppendLine(task.Value.ProjectName + ":");
                     }
 
                     // Task description

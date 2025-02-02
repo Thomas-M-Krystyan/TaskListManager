@@ -65,7 +65,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
 
             // Assert
             string expectedOutput =
-                $"{projectName}\r\n" +
+                $"{projectName}:\r\n" +
                 $"    [ ] 0: {taskName}\r\n" +
                 $"\r\n";
 
@@ -189,7 +189,7 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
 
             // Assert
             string expectedOutput =
-                $"{projectName}\r\n" +
+                $"{projectName}:\r\n" +
                 $"    [ ] {taskId}: {taskName}\r\n" +
                 $"\r\n";
 
