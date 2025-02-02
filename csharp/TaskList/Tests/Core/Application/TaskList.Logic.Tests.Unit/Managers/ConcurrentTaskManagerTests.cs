@@ -1,4 +1,6 @@
 ﻿using Moq;
+using System.Text.Json;
+using TaskList.Domain.Models;
 using TaskList.Logic.Helpers.Interfaces;
 using TaskList.Logic.Managers;
 using TaskList.Logic.Responses;
@@ -67,6 +69,62 @@ namespace TaskList.Logic.Tests.Unit.Managers
                 _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
 
                 Assert.That(actualTaskList, Has.Count.EqualTo(1));
+            });
+        }
+
+        [Test]
+        public void GetTaskList_IsTrulyImmutable()
+        {
+            // Arrange
+            _ = _counterMock
+                .Setup(counter => counter.GetNextProjectId())
+                .Returns(default(long));
+
+            _ = _counterMock
+                .Setup(counter => counter.GetNextTaskId())
+                .Returns(default(long));
+
+            TestTaskManager taskManager = new(_counterMock.Object);
+
+            _ = taskManager.AddProject(ProjectName);
+            _ = taskManager.AddTask(ProjectName, TaskName);
+
+            IReadOnlyDictionary<string, ProjectItem> taskList = taskManager.GetTaskList();
+
+            string initialOriginalSerializedTaskList = JsonSerializer.Serialize(taskManager.GetTaskList());
+            const string expectedOriginalSerializedTaskList =
+                "{\"Work\":{\"Id\":0,\"Name\":\"Work\",\"Tasks\":{\"0\":{\"Id\":0,\"Description\":\"Task\",\"IsDone\":false}}}}";
+
+            // Assert before
+            Assert.Multiple(() =>
+            {
+                _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
+                _counterMock.Verify(mock => mock.GetNextTaskId(), Times.Once);
+
+                Assert.That(initialOriginalSerializedTaskList, Is.EqualTo(expectedOriginalSerializedTaskList));
+            });
+
+            // Act #1 (try to add new task inside of a project)
+            taskList.First().Value.Tasks.Add(2, new TaskItem() { Id = 2, Description = "New task", IsDone = true });
+
+            // Assert after #1
+            Assert.Multiple(() =>
+            {
+                string serializedTaskListAfterFirstModification = JsonSerializer.Serialize(taskManager.GetTaskList());
+
+                Assert.That(serializedTaskListAfterFirstModification, Is.EqualTo(expectedOriginalSerializedTaskList));
+            });
+
+            // Act #2 (try to modify existing task)
+            TaskItem firstTask = taskList.First().Value.Tasks.First().Value;
+            firstTask.IsDone = true;
+
+            // Assert after #2
+            Assert.Multiple(() =>
+            {
+                string serializedTaskListAfterSecondModification = JsonSerializer.Serialize(taskManager.GetTaskList());
+
+                Assert.That(serializedTaskListAfterSecondModification, Is.EqualTo(expectedOriginalSerializedTaskList));
             });
         }
         #endregion
