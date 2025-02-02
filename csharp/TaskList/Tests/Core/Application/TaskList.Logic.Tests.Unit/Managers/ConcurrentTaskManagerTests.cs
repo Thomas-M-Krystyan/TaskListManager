@@ -15,6 +15,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
         #endregion
 
         #region Data
+        private const long TaskId = 1;
         private const string ProjectName = "Work";
         private const string TaskName = "Task";
 
@@ -315,21 +316,44 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
         #region CheckTask()
         [Test]
-        public void CheckTask_MarkAsDone_TaskList_Empty_ReturnsFailure()
+        public void CheckTask_MarkAsDone_Project_NotExisting_ReturnsFailure()
         {
             // Arrange
-            const long taskId = 1;
-
             TestTaskManager taskManager = new(_counterMock.Object);
 
             // Act
-            CommandResponse response = taskManager.CheckTask(taskId, true);
+            CommandResponse response = taskManager.CheckTask(TaskId, true);
 
             // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(response.IsFailure, Is.True);
-                Assert.That(response.Content, Is.EqualTo($"Operation failed: Could not find a task with an ID of {taskId}."));
+                Assert.That(response.Content, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
+            });
+        }
+
+        [Test]
+        public void CheckTask_MarkAsDone_Task_NotExisting_ReturnsFailure()
+        {
+            // Arrange
+            _ = _counterMock
+                .Setup(counter => counter.GetNextProjectId())
+                .Returns(default(long));
+
+            TestTaskManager taskManager = new(_counterMock.Object);
+
+            _ = taskManager.AddProject(ProjectName);
+
+            // Act
+            CommandResponse response = taskManager.CheckTask(TaskId, true);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
+
+                Assert.That(response.IsFailure, Is.True);
+                Assert.That(response.Content, Is.EqualTo($"Operation failed: Could not find a task with an ID of {TaskId}."));
             });
         }
 
