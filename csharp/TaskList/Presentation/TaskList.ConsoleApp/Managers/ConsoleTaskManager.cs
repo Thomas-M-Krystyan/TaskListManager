@@ -29,9 +29,7 @@ namespace TaskList.ConsoleApp.Managers
             {
                 _stringBuilder.Clear();
 
-                // NOTE: Order of elements is not guaranteed in a ConcurrentDictionary. Even if the order of elements doesn't
-                //       matter at all from the perspective of business logic, it's important condition for the functional test
-                foreach (KeyValuePair<string, ProjectItem> project in GetTaskList().OrderBy(project => project.Value.Id))
+                foreach (KeyValuePair<string, ProjectItem> project in GetProjectsSortedById())
                 {
                     // Project name
                     _stringBuilder.AppendLine(project.Value.Name);
@@ -82,6 +80,11 @@ namespace TaskList.ConsoleApp.Managers
         }
 
         #region Helper methods
+        // NOTE: Order of elements is not guaranteed in a ConcurrentDictionary. Even if the order of elements doesn't
+        //       matter at all from the perspective of business logic, it might be important from the user perspective
+        private IOrderedEnumerable<KeyValuePair<string, ProjectItem>> GetProjectsSortedById()
+            => GetTaskList().OrderBy(project => project.Value.Id);
+
         private static string GetTaskDetails(TaskItem task)
             => string.Format("    [{0}] {1}: {2}", task.IsDone ? 'x' : ' ', task.Id, task.Name);
         #endregion
