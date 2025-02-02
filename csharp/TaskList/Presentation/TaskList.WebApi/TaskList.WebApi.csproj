@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="TaskList.WebApi.Tests.Integration" />
     <InternalsVisibleTo Include="TaskList.WebApi.Tests.Unit" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
