@@ -92,7 +92,7 @@ namespace TaskList.Logic.Tests.Unit.Managers
 
             string initialOriginalSerializedTaskList = JsonSerializer.Serialize(taskManager.GetTaskList());
             const string expectedOriginalSerializedTaskList =
-                "{\"Work\":{\"Id\":0,\"Name\":\"Work\",\"Tasks\":{\"0\":{\"Id\":0,\"Name\":\"Task\",\"IsDone\":false}}}}";
+                "{\"Work\":{\"Id\":0,\"Name\":\"Work\",\"Tasks\":{\"0\":{\"Id\":0,\"Name\":\"Task\",\"IsDone\":false,\"Deadline\":\"9999-12-31\"}}}}";
 
             // Assert before
             Assert.Multiple(() =>
