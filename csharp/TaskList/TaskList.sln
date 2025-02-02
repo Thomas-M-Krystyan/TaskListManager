@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.ConsoleApp.Tests.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.WebApi.Tests.Unit", "Tests\Presentation\TaskList.WebApi.Tests.Unit\TaskList.WebApi.Tests.Unit.csproj", "{40906F8A-6BF9-4AB0-BC30-37E908CE1890}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskList.WebApi.Tests.Integration", "Tests\Presentation\TaskList.WebApi.Tests.Integration\TaskList.WebApi.Tests.Integration.csproj", "{9294EBF7-00FF-49B0-8CAF-88EC77EC57F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{40906F8A-6BF9-4AB0-BC30-37E908CE1890}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40906F8A-6BF9-4AB0-BC30-37E908CE1890}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40906F8A-6BF9-4AB0-BC30-37E908CE1890}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9294EBF7-00FF-49B0-8CAF-88EC77EC57F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9294EBF7-00FF-49B0-8CAF-88EC77EC57F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9294EBF7-00FF-49B0-8CAF-88EC77EC57F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9294EBF7-00FF-49B0-8CAF-88EC77EC57F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,5 +107,6 @@ Global
 		{DBF2565E-31FD-4058-AF9B-4969788A3A70} = {60B7B1DC-177D-49BF-A4AC-1DBC9C8E15DA}
 		{5D0E6BEE-3A12-4013-AEC1-D7AAAF42D8A8} = {D2D0448A-F602-4BCA-8DE3-B34A0C575403}
 		{40906F8A-6BF9-4AB0-BC30-37E908CE1890} = {D2D0448A-F602-4BCA-8DE3-B34A0C575403}
+		{9294EBF7-00FF-49B0-8CAF-88EC77EC57F5} = {D2D0448A-F602-4BCA-8DE3-B34A0C575403}
 	EndGlobalSection
 EndGlobal
