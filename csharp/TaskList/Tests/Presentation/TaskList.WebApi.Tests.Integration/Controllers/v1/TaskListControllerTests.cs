@@ -49,7 +49,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         public async Task DisplayTaskListAsync_Exception_IntegrationTest()
         {
             // Arrange
-            const string errorMessage = "DisplayTaskList failed.";
+            string errorMessage = $"{nameof(WebApiTaskManager.DisplayTaskList)} failed.";
 
             Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
             
@@ -117,7 +117,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         public async Task AddProjectAsync_Exception_IntegrationTest()
         {
             // Arrange
-            const string errorMessage = "AddProjectAsync failed.";
+            string errorMessage = $"{nameof(WebApiTaskManager.AddProject)} failed.";
 
             Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
 
@@ -185,7 +185,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         public async Task AddTaskAsync_Exception_IntegrationTest()
         {
             // Arrange
-            const string errorMessage = "AddTaskAsync failed.";
+            string errorMessage = $"{nameof(WebApiTaskManager.AddTask)} failed.";
 
             Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
 
@@ -299,7 +299,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         public async Task CheckTaskAsync_Exception_IntegrationTest()
         {
             // Arrange
-            const string errorMessage = "CheckTaskAsync failed.";
+            string errorMessage = $"{nameof(WebApiTaskManager.CheckTask)} failed.";
 
             Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
 
