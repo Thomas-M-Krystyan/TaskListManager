@@ -93,6 +93,8 @@ namespace TaskList.ConsoleApp.Tests.Functional
                 ""
             );
 
+            // TODO: Test new display
+
             Execute("quit");
         }
 
