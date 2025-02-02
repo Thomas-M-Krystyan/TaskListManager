@@ -97,6 +97,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
+
             _ = taskManager.AddProject(ProjectName);
 
             TaskListController controller = new(taskManager);
@@ -146,6 +147,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
+
             _ = taskManager.AddProject(ProjectName);
 
             TaskListController controller = new(taskManager);
@@ -213,6 +215,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
+
             _ = taskManager.AddProject(ProjectName);
             _ = taskManager.AddTask(ProjectName, TaskName);
 
@@ -234,6 +237,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
+
             _ = taskManager.AddProject(ProjectName);
             _ = taskManager.AddTask(ProjectName, TaskName);
             _ = taskManager.CheckTask(
@@ -275,6 +279,7 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         {
             // Arrange
             WebApiTaskManager taskManager = new(new CounterRegister());
+
             _ = taskManager.AddProject(ProjectName);
 
             TaskListController controller = new(taskManager);
