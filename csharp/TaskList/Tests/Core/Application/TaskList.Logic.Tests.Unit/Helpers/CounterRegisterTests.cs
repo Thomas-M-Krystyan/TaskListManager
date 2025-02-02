@@ -13,6 +13,50 @@ namespace TaskList.Logic.Tests.Unit.Helpers
             CounterRegister.Reset();
         }
 
+        #region Project IDs
+        [Test]
+        public void GetNextProjectId_Called_OneTime_ReturnsIncrementedId()
+        {
+            // Act
+            long result = _counterRegister.GetNextProjectId();
+
+            // Assert
+            Assert.That(result, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void GetNextProjectId_Called_ManyTimes_ReturnsIncrementedId()
+        {
+            // Act
+            long result1 = _counterRegister.GetNextProjectId();
+            long result2 = _counterRegister.GetNextProjectId();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result1, Is.EqualTo(1));
+                Assert.That(result2, Is.EqualTo(2));
+            });
+        }
+
+        [Test]
+        public void GetNextProjectId_Created_MultipleTimes_ReturnsIncrementedId()
+        {
+            // Act
+            long result1 = _counterRegister.GetNextProjectId();
+            long result2 = new CounterRegister().GetNextProjectId();  // All instances should use the same shared counter
+            long result3 = _counterRegister.GetNextProjectId();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result1, Is.EqualTo(1));
+                Assert.That(result2, Is.EqualTo(2));
+                Assert.That(result3, Is.EqualTo(3));
+            });
+        }
+        #endregion
+
         #region Task IDs
         [Test]
         public void GetNextTaskId_Called_OneTime_ReturnsIncrementedId()
