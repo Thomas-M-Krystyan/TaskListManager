@@ -113,6 +113,53 @@ namespace TaskList.WebApi.Tests.Integration.Controllers.v1
         }
         #endregion
 
+        #region DisplayTasksByDeadline()
+        [Test]
+        public async Task DisplayTasksByDeadline_HappyPath_IntegrationTest()
+        {
+            // Arrange
+            WebApiTaskManager taskManager = new(new CounterRegister());
+            TaskListController controller = new(taskManager);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.DisplayTasksByDeadlineAsync();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+                Assert.That(result.Value, Is.EqualTo(EmptyJson));
+            });
+        }
+
+        [Test]
+        public async Task DisplayTasksByDeadline_Exception_IntegrationTest()
+        {
+            // Arrange
+            string errorMessage = $"{nameof(WebApiTaskManager.DisplayTasksByDeadline)} failed.";
+
+            Mock<IWebApiTaskManager> taskManagerMock = new(MockBehavior.Strict);
+
+            _ = taskManagerMock
+                .Setup(mock => mock.DisplayTasksByDeadline())
+                .Returns(CommandResponse.Failure(errorMessage));
+
+            TaskListController controller = new(taskManagerMock.Object);
+
+            // Act
+            ObjectResult result = (ObjectResult)await controller.DisplayTasksByDeadlineAsync();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                taskManagerMock.Verify(mock => mock.DisplayTasksByDeadline(), Times.Once);
+
+                Assert.That(result.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
+                Assert.That(result.Value, Is.EqualTo($"Operation failed: {errorMessage}."));
+            });
+        }
+        #endregion
+
         #region AddProjectAsync()
         [Test]
         public async Task AddProjectAsync_HappyPath_IntegrationTest()
