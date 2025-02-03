@@ -1,5 +1,7 @@
 ﻿using TaskList.ConsoleApp.IO.Interfaces;
 using TaskList.ConsoleApp.Managers.Interfaces;
+using TaskList.ConsoleApp.ViewModels;
+using TaskList.ConsoleApp.ViewModels.Parent;
 using TaskList.Domain.Models;
 using TaskList.Logic.Helpers.Interfaces;
 using TaskList.Logic.Managers;
@@ -95,10 +97,57 @@ namespace TaskList.ConsoleApp.Managers
         {
             try
             {
-                _stringBuilder.Clear();
-                _todayProjects.Clear();
+                Dictionary<long, TaskItem> tasksSortedByDeadline = GetAllTasks()
+                    // Sort by deadline
+                    .OrderBy(task => task.Value.Deadline)
+                    // Sort by projects
+                    .ThenBy(task => task.Value.ProjectName)
+                    // Sort by ID
+                    .ThenBy(task => task.Key)
+                    .ToDictionary();
 
-                throw new NotImplementedException();
+                if (tasksSortedByDeadline.Count == 0)
+                {
+                    return CommandResponse.Success(string.Empty, true);
+                }
+
+                GroupedTasksViewModel complexDisplay = new();
+
+                foreach (KeyValuePair<long, TaskItem> task in tasksSortedByDeadline)
+                {
+                    // Add new deadline
+                    if (complexDisplay.Deadlines.TryAdd(task.Value.Deadline, new DeadlineViewModel(task.Value.Deadline)))
+                    {
+                        // Add new project
+                        complexDisplay.Deadlines[task.Value.Deadline].Projects.Add(
+                            task.Value.ProjectName,
+                            new ProjectViewModel(task.Value.ProjectName)
+                            {
+                                // Add new task
+                                Tasks = [new TaskViewModel(GetTaskDetails(task.Value))]
+                            });
+                    }
+                    else
+                    {
+                        // Add new project
+                        if (complexDisplay.Deadlines[task.Value.Deadline].Projects.TryAdd(
+                            task.Value.ProjectName,
+                            new ProjectViewModel(task.Value.ProjectName)))
+                        {
+                            // Add new task
+                            complexDisplay.Deadlines[task.Value.Deadline].Projects[task.Value.ProjectName].Tasks.Add(
+                                new TaskViewModel(GetTaskDetails(task.Value)));
+                        }
+                        else
+                        {
+                            // Add new task
+                            complexDisplay.Deadlines[task.Value.Deadline].Projects[task.Value.ProjectName].Tasks.Add(
+                                new TaskViewModel(GetTaskDetails(task.Value)));
+                        }
+                    }
+                }
+
+                return CommandResponse.Success(complexDisplay.ToString(), true);
             }
             catch (Exception exception)
             {

@@ -135,8 +135,8 @@ namespace TaskList.ConsoleApp.Tests.Functional
                 ""
             );
 
-            string todayString = today.ToString("yyyy-MM-dd");
-            string tomorrowString = tomorrow.ToString("yyyy-MM-dd");
+            string todayString = today.ToString("dd-MM-yyyy");
+            string tomorrowString = tomorrow.ToString("dd-MM-yyyy");
 
             Execute("view-by-deadline");
             ReadLines(
@@ -155,6 +155,8 @@ namespace TaskList.ConsoleApp.Tests.Functional
                 "No deadline:",
                 "    Secrets:",
                 "        [ ] 1: Eat more donuts.",
+                "",
+                "    Training:",
                 "        [x] 3: Four Elements of Simple Design",
                 "        [x] 6: Primitive Obsession",
                 "        [ ] 7: Outside-In TDD",
