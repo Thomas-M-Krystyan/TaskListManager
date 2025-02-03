@@ -234,6 +234,68 @@ namespace TaskList.ConsoleApp.Tests.Unit.Managers
         }
         #endregion
 
+        #region DisplayTasksByDeadline()
+        [Test]
+        public void DisplayTasksByDeadline_TaskList_Empty_ReturnsSuccess()
+        {
+            // Arrange
+            ConsoleTaskManager taskManager = new(new StringBuilderProxy(), _counterMock.Object);
+
+            // Act
+            CommandResponse result = taskManager.DisplayTasksByDeadline();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.IsSuccess, Is.True);
+                Assert.That(result.Content, Is.Empty);
+            });
+        }
+
+        [Test]
+        public void DisplayTasksByDeadline_TaskList_Filled_ReturnsSuccess()
+        {
+            // Arrange
+            const string projectName = "Project 1";
+            const string taskName = "Task 1";
+            const long taskId = 1;
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+            _ = _counterMock
+                .Setup(mock => mock.GetNextProjectId())
+                .Returns(default(long));
+
+            _ = _counterMock
+                .Setup(mock => mock.GetNextTaskId())
+                .Returns(taskId);
+
+            ConsoleTaskManager taskManager = new(new StringBuilderProxy(), _counterMock.Object);
+
+            _ = taskManager.AddProject(projectName);
+            _ = taskManager.AddTask(projectName, taskName);
+            _ = taskManager.SetDeadline(taskId, today);
+
+            // Act
+            CommandResponse result = taskManager.DisplayTasksByDeadline();
+
+            // Assert
+            string expectedOutput =
+                $"{today:dd-MM-yyyy}:\r\n" +
+                $"    {projectName}:\r\n" +
+                $"        [ ] {taskId}: {taskName}\r\n" +
+                $"\r\n";
+
+            Assert.Multiple(() =>
+            {
+                _counterMock.Verify(mock => mock.GetNextProjectId(), Times.Once);
+                _counterMock.Verify(mock => mock.GetNextTaskId(), Times.Once);
+
+                Assert.That(result.IsSuccess, Is.True);
+                Assert.That(result.Content, Is.EqualTo(expectedOutput));
+            });
+        }
+        #endregion
+
         #region Help()
         [Test]
         public void Help_ReturnsExpectedString()
