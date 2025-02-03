@@ -71,3 +71,16 @@ You should create at least the following REST endpoints:
 - `GET /projects/view_by_deadline`: Get all tasks grouped by deadline (or also by project if you did the bonus)
 
 
+### 5. Remarks from the author:
+- All strings can be extracted to dedicated `Resources.resx` files
+- The two collections (simulating tables in a database) inside of `ConcurrentTaskManager.cs` should be extracted
+  to a new layer **Persistence** for example as a `TaskList.InMemory` library project
+- The `TaskList.Logic` project in the Application layer, should use DTO models to communicate with Persistence
+- The console application is a little buggy, and the approach to decompose commands is not always perfectly
+  working. Looking into this project and how to make it 100% reliable and easier to read, would be recommended
+- API project should be protected, at least, by API key (or similar solution, e.g. JWT tokens)
+- 100% code coverage is possible, adding more tests would be the next step
+- Using a data store (e.g., an external database), would be recommended to give users an option to edit and to
+  display changes made from both applications (console and API), even at the same time.
+
+  ![image](https://github.com/user-attachments/assets/1ef73358-b1ec-434d-aea1-55cae9dd6573)
